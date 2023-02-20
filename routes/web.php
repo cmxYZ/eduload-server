@@ -13,4 +13,4 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () { return view('welcome'); } );
-Route::get('/place', 'App\Http\Controllers\MyPlaceController@index');
+Route::get('/keycloak', function () { return view('keycloak'); } );
