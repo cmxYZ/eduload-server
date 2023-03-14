@@ -1,5 +1,3 @@
-
-
 <?php
 define('DB_HOST', 'localhost');
 define('DB_USER', 'root');
@@ -18,7 +16,9 @@ function prepareData($data)
     return mysqli_real_escape_string($connection, stripslashes(htmlspecialchars($data)));
 }
 
-
+$get_data = file_get_contents("http://runp.dit.urfu.ru:8990/api/teachers");
+$get_data = json_decode($get_data);
+var_dump($get_data);
 
 
 ?>
