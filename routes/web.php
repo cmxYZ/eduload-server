@@ -13,4 +13,4 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () { return view('welcome'); } );
-Route::get('/keycloak', function () { return view('keycloak'); } );
+Route::get('/loaddata', function () { return view('loaddata'); } );
