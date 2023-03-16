@@ -16,3 +16,4 @@ Route::get('/', function () { return view('welcome'); } );
 Route::get('/teachers', function () { return view('teachers'); } );
 Route::get('/loads', function () { return view('loads'); } );
 Route::get('/updateteachers', function () { return view('update_teachers'); } );
+Route::get('/updateloads', function () { return view('update_loads'); } );

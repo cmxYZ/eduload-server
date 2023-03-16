@@ -35,7 +35,6 @@ if (!file_exists('loads.json'))
 }
     $get_data = file_get_contents('loads.json');
     $result = json_decode($get_data);
-    var_dump($result);
 ?>
 
 

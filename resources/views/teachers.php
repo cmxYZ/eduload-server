@@ -35,7 +35,6 @@ if (!file_exists('teachers.json'))
 }
     $get_data = file_get_contents('teachers.json');
     $result = json_decode($get_data);
-    var_dump($result);
 ?>
 
 

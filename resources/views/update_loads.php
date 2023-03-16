@@ -11,14 +11,14 @@ if ($connection->connect_error) {
 }
 
 
-if (file_exists('teachers.json'))
+if (file_exists('loads.json'))
 {
     
-    $get_data = file_get_contents('teachers.json');
+    $get_data = file_get_contents('loads.json');
     $result = json_decode($get_data);
 
     foreach ($result as $value) {
-        $sql = "INSERT INTO `Teachers` (`guidPerson1C`, `lastName`, `firstName`, `patronymic`, `postName`, `workPlace`, `samAccountName`, `stake`) 
+        $sql = "INSERT INTO `Loads` (`guidPerson1C`, `lastName`, `firstName`, `patronymic`, `postName`, `workPlace`, `samAccountName`, `stake`) 
         VALUES ('$value->guidPerson1C', '$value->lastName', '$value->firstName', '$value->patronymic', '$value->post', 
         '$value->workPlace', '$value->samAccountName', '$value->stake')";
         
