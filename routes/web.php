@@ -13,4 +13,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () { return view('welcome'); } );
-Route::get('/loaddata', function () { return view('loaddata'); } );
+Route::get('/teachers', function () { return view('teachers'); } );
+Route::get('/loads', function () { return view('loads'); } );
+Route::get('/updateteachers', function () { return view('update_teachers'); } );
