@@ -36,7 +36,7 @@ if (file_exists('loads.json'))
                 $sql = "INSERT INTO `Loads` (`guidPhysFace1C`, `formingDivisionuuid`, `readingDivisionuuid`, `groupsHistory`, 
                 `disciplineName`, `compensationType`, `loadType`, `plannedHours`, `realHours`, `semester`, `year`, `tkey`) 
                 VALUES ('$guidPhysFace1C', '$formingDivisionuuid', '$readingDivisionuuid', '$groupsHistory', '$disciplineName', 
-                '$compensationType', '$loadType', '$plannedHours', '$realHours', '$semester', '$year', '$tkey')";
+                '$compensationType', '$loadType', $plannedHours, $realHours, '$semester', '$year', '$tkey')";
                 $result = mysqli_query($connection, $sql);
                 if ($result == false) {
                     die("SQL Error");
