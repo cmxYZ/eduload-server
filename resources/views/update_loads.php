@@ -43,8 +43,8 @@ if (file_exists('loads.json'))
                 }
 
                 try {
-                    addDivision($load->formingDivision->uuid, $load->formingDivision->name);
-                    addDivision($load->readingDivision->uuid, $load->readingDivision->name);
+                    addDivision($connection, $load->formingDivision->uuid, $load->formingDivision->name);
+                    addDivision($connection, $load->readingDivision->uuid, $load->readingDivision->name);
                 } catch (Exception $e) {}
             }
         }
@@ -53,8 +53,7 @@ if (file_exists('loads.json'))
     
 }
 
-function addDivision($uuid, $name) {
-    global $connection;
+function addDivision($connection, $uuid, $name) {
     $sql = "INSERT INTO `Divisions` (`uuid`, `name`) VALUES ('$uuid', '$name')";
     mysqli_query($connection, $sql);
 }
