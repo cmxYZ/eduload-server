@@ -23,7 +23,7 @@ if (file_exists('loads.json'))
             $guidPhysFace1C = $teacher->guidPhysFace1C;
             $samAccountName = $teacher->samAccountName;
             $tkey = $teacher->tkey;
-            foreach ($teachers->loads as $load) {
+            foreach ($teacher->loads as $load) {
                 $formingDivisionuuid = $load->formingDivisionuuid->uuid;
                 $readingDivisionuuid = $load->readingDivisionuuid->uuid;
                 $groupsHistory = implode(", ", $load->groupsHistory);
