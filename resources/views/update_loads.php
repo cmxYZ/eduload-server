@@ -26,7 +26,7 @@ if (file_exists('loads.json'))
             foreach ($teacher->loads as $load) {
                 $formingDivisionuuid = $load->formingDivision->uuid;
                 $readingDivisionuuid = $load->readingDivision->uuid;
-                $groupsHistory = implode(", ", $load->groupsHistory);
+                $groupsHistory = implode(", ", $load->groupHistory);
                 $disciplineName = $load->disciplineName;
                 $compensationType = $load->compensationType;
                 $loadType = $load->loadType;
