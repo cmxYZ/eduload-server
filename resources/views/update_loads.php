@@ -13,24 +13,48 @@ if ($connection->connect_error) {
 
 if (file_exists('loads.json'))
 {
-    
     $get_data = file_get_contents('loads.json');
     $result = json_decode($get_data);
 
     foreach ($result as $value) {
-        $sql = "INSERT INTO `Loads` (`guidPerson1C`, `lastName`, `firstName`, `patronymic`, `postName`, `workPlace`, `samAccountName`, `stake`) 
-        VALUES ('$value->guidPerson1C', '$value->lastName', '$value->firstName', '$value->patronymic', '$value->post', 
-        '$value->workPlace', '$value->samAccountName', '$value->stake')";
-        
-        $result = mysqli_query($connection, $sql);
+        $year = $value->year;
+        $semester = $value->semester;
+        foreach ($value->teachers as $teacher) {
+            $guidPhysFace1C = $teacher->guidPhysFace1C;
+            $samAccountName = $teacher->samAccountName;
+            $tkey -> $teachers->tkey;
+            foreach ($teachers->loads as $load) {
+                $formingDivisionuuid = $load->formingDivisionuuid->uuid;
+                $readingDivisionuuid = $load->readingDivisionuuid->uuid;
+                $groupsHistory = implode(", ", $load->groupsHistory);
+                $disciplineName = $load->disciplineName;
+                $compensationType = $load->compensationType;
+                $loadType = $load->loadType;
+                $plannedHours = $load->plannedHours;
+                $realHours = $load->realHours;
+                
+                $sql = "INSERT INTO `Loads` (`guidPhysFace1C`, `formingDivisionuuid`, `readingDivisionuuid`, `groupsHistory`, 
+                `disciplineName`, `compensationType`, `loadType`, `plannedHours`, `realHours`, `semester`, `year`, `tkey`) 
+                VALUES ('$guidPhysFace1C', '$formingDivisionuuid', '$readingDivisionuuid', '$groupsHistory', '$disciplineName', 
+                '$compensationType', '$loadType', '$plannedHours', '$realHours', '$semester', '$year', '$tkey')";
+                $result = mysqli_query($connection, $sql);
+                if ($result == false) {
+                    die("SQL Error");
+                }
 
-        if ($result == false) {
-            die("SQL Error");
+                addDivision($loads->formingDivision->uuid, $loads->formingDivision->name);
+                addDivision($loads->readingDivision->uuid, $loads->readingDivision->name);
+            }
         }
-        else echo "Success";
+
     }
     
+}
 
+function addDivision($uuid, $name) {
+    global $connection;
+    $sql = "INSERT INTO `Divisions` (`uuid`, `name`) VALUES ('$uuid', '$name')";
+    mysqli_query($connection, $sql);
 }
 
 ?>
