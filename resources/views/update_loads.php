@@ -42,8 +42,10 @@ if (file_exists('loads.json'))
                     die("SQL Error");
                 }
 
-                addDivision($loads->formingDivision->uuid, $loads->formingDivision->name);
-                addDivision($loads->readingDivision->uuid, $loads->readingDivision->name);
+                try {
+                    addDivision($load->formingDivision->uuid, $load->formingDivision->name);
+                    addDivision($load->readingDivision->uuid, $load->readingDivision->name);
+                } catch (Exception $e) {}
             }
         }
 
