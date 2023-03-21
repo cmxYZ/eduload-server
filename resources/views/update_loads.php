@@ -22,7 +22,7 @@ if (file_exists('loads.json'))
         foreach ($value->teachers as $teacher) {
             $guidPhysFace1C = $teacher->guidPhysFace1C;
             $samAccountName = $teacher->samAccountName;
-            $tkey = $teachers->tkey;
+            $tkey = $teacher->tkey;
             foreach ($teachers->loads as $load) {
                 $formingDivisionuuid = $load->formingDivisionuuid->uuid;
                 $readingDivisionuuid = $load->readingDivisionuuid->uuid;
