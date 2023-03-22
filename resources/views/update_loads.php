@@ -38,9 +38,6 @@ if (file_exists('loads.json'))
                 VALUES ('$guidPhysFace1C', '$formingDivisionuuid', '$readingDivisionuuid', '$groupsHistory', '$disciplineName', 
                 '$compensationType', '$loadType', '$plannedHours', '$realHours', '$semester', '$year', '$tkey')";
                 $result = mysqli_query($connection, $sql);
-                if ($result == false) {
-                    die("SQL Error");
-                }
 
                 try {
                     addDivision($connection, $load->formingDivision->uuid, $load->formingDivision->name);

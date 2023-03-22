@@ -13,24 +13,28 @@ if ($connection->connect_error) {
 
 if (file_exists('teachers.json'))
 {
-    
     $get_data = file_get_contents('teachers.json');
     $result = json_decode($get_data);
 
+
+
     foreach ($result as $value) {
-        $sql = "INSERT INTO `Teachers` (`guidPerson1C`, `lastName`, `firstName`, `patronymic`, `postName`, `workPlace`, `samAccountName`, `stake`) 
-        VALUES ('$value->guidPerson1C', '$value->lastName', '$value->firstName', '$value->patronymic', '$value->post', 
-        '$value->workPlace', '$value->samAccountName', '$value->stake')";
-        
-        $result = mysqli_query($connection, $sql);
-
-        if ($result == false) {
-            die("SQL Error");
+        $InfoWorkPlaces = '';
+        if ($value->guidPerson1C == null || $value->guidPhysPerson1C == null) {
+            $InfoWorkPlaces = "$value->post($value->post)";
         }
-        else echo "Success";
+        else {
+            $sql = "INSERT INTO `PhysFace1C` (`guidPhysFace1C`, `guidPerson1C`, `postName`, `workPlace`, `year`, `hours`) 
+            VALUES ('$value->guidPhysPerson1C', '$value->guidPerson1C', '$value->post', '$value->workPlace', '', '')";
+        
+            mysqli_query($connection, $sql);
+        }
+
+        $sql = "INSERT INTO `Teachers` (`tkey`, `guidPerson1C`, `lastName`, `firstName`, `patronymic`, `samAccountName`, `stake`, `infoWorkPlaces`) 
+        VALUES ('$value->tkey', '$value->guidPerson1C', '$value->lastName', '$value->firstName', '$value->patronymic', 
+        '$value->samAccountName', '$value->stake', '$InfoWorkPlaces')";
+        
+        mysqli_query($connection, $sql);
     }
-    
-
 }
-
 ?>
