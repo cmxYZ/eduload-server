@@ -27,7 +27,9 @@ if (file_exists('teachers.json'))
             $sql = "INSERT INTO `PhysFace1C` (`guidPhysFace1C`, `guidPerson1C`, `postName`, `workPlace`, `year`, `hours`) 
             VALUES ('$value->guidPhysPerson1C', '$value->guidPerson1C', '$value->post', '$value->workPlace', '', '')";
         
+        try {
             mysqli_query($connection, $sql);
+            } catch (Exception $e) {}
         }
 
         $sql = "INSERT INTO `Teachers` (`tkey`, `guidPerson1C`, `lastName`, `firstName`, `patronymic`, `samAccountName`, `stake`, `infoWorkPlaces`) 
