@@ -42,7 +42,7 @@ if (file_exists('teachers.json'))
             $sql = "SELECT `infoWorkPlaces` FROM `Teachers` WHERE `tkey` = '$value->tkey'";
             $result = mysqli_query($connection, $sql);
             $result = $result->fetch_row();
-            $InfoWorkPlaces = $result[7] . ", $InfoWorkPlaces";
+            $InfoWorkPlaces = $result[0] . ", $InfoWorkPlaces";
             $sql = "UPDATE `Teachers` SET `infoWorkPlaces` = '$InfoWorkPlaces' WHERE `Teachers`.`tkey` = '$value->tkey'";
             mysqli_query($connection, $sql);
         }
