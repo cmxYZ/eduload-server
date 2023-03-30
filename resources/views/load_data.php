@@ -45,11 +45,6 @@ file_put_contents('data.json', $json);
 $get_data = file_get_contents('data.json');
 echo $get_data;
 
-
-
-
-
-
 function SummHours($sql, $connection)
 {
     $real = 0;
@@ -59,7 +54,7 @@ function SummHours($sql, $connection)
     foreach ($result as $row)
     {
         $planed += (float)$row[0];
-        $real += (float)$row[0];
+        $real += (float)$row[1];
     }
     $diff = $planed-$real;
     return ["$planed", "$real", "$diff"];
