@@ -16,20 +16,14 @@ if (file_exists('teachers.json'))
     $get_data = file_get_contents('teachers.json');
     $result = json_decode($get_data);
 
-
-
     foreach ($result as $value) {
-        $InfoWorkPlaces = '';
-        if ($value->guidPerson1C == null || $value->guidPhysPerson1C == null) {
-            $InfoWorkPlaces = "$value->post($value->workPlace)";
-        }
-        else {
-            $sql = "INSERT INTO `PhysFace1C` (`guidPhysFace1C`, `guidPerson1C`, `postName`, `workPlace`, `year`, `hours`) 
-            VALUES ('$value->guidPhysPerson1C', '$value->guidPerson1C', '$value->post', '$value->workPlace', '', '')";
+        $InfoWorkPlaces = "$value->post($value->workPlace)";
+
+        if ($value->guidPerson1C != null && $value->guidPhysPerson1C != null) {
+            $sql = "INSERT INTO `PhysFace1C` (`guidPhysFace1C`, `guidPerson1C`, `postName`, `workPlace`, `year`, `stake`, `hours`) 
+            VALUES ('$value->guidPhysPerson1C', '$value->guidPerson1C', '$value->post', '$value->workPlace', '', '$value->stake', '')";
         
-        try {
             mysqli_query($connection, $sql);
-            } catch (Exception $e) {}
         }
 
         $sql = "INSERT INTO `Teachers` (`tkey`, `guidPerson1C`, `lastName`, `firstName`, `patronymic`, `samAccountName`, `stake`, `infoWorkPlaces`) 
@@ -39,11 +33,14 @@ if (file_exists('teachers.json'))
         try {
         mysqli_query($connection, $sql);
         } catch (Exception $e) {
-            $sql = "SELECT `infoWorkPlaces` FROM `Teachers` WHERE `tkey` = '$value->tkey'";
+            $sql = "SELECT `infoWorkPlaces`, `stake` FROM `Teachers` WHERE `tkey` = '$value->tkey'";
             $result = mysqli_query($connection, $sql);
             $result = $result->fetch_row();
             $InfoWorkPlaces = $result[0] . ", $InfoWorkPlaces";
+            $stake = (float)$result[1] + (float)$value->stake;
             $sql = "UPDATE `Teachers` SET `infoWorkPlaces` = '$InfoWorkPlaces' WHERE `Teachers`.`tkey` = '$value->tkey'";
+            mysqli_query($connection, $sql);
+            $sql = "UPDATE `Teachers` SET `stake` = '$stake' WHERE `Teachers`.`tkey` = '$value->tkey'";
             mysqli_query($connection, $sql);
         }
 }
