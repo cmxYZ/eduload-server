@@ -1,4 +1,6 @@
 <?php 
+header('Access-Control-Allow-Origin: *');
+
 define('DB_HOST', 'localhost');
 define('DB_USER', 'root');
 define('DB_PASS', 'mon-ser-rtf-123');
