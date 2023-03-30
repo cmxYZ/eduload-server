@@ -18,16 +18,21 @@ $result = $result->fetch_all();
 
 foreach ($result as $row)
 {
-    $b = SummHours("SELECT plannedHours, realHours FROM `Loads` WHERE tkey='$row->tkey' AND compensationType='бюджет' AND year='$year'", $connection);
-    $c = SummHours("SELECT plannedHours, realHours FROM `Loads` WHERE tkey='$row->tkey' AND compensationType='контракт' AND year='$year'", $connection);
-    $a = SummHours("SELECT plannedHours, realHours FROM `Loads` WHERE tkey='$row->tkey' AND year='$year'", $connection);
+    $tkey = $row['tkey'];
+    $name = $row['lastName'] . $row['firstName'] . $row['patronymic'];
+    $infoWorkPlaces = $row['infoWorkPlaces'];
+    $stake = $row['stake'];
 
-    $line = ["name" => "$row->lastName $row->firstName $row->patronymic", "infoWorkPlaces" => "$row->infoWorkPlaces", "stake" => "$row->stake", 
+    $b = SummHours("SELECT plannedHours, realHours FROM `Loads` WHERE tkey='$tkey' AND compensationType='бюджет' AND year='$year'", $connection);
+    $c = SummHours("SELECT plannedHours, realHours FROM `Loads` WHERE tkey='tkey' AND compensationType='контракт' AND year='$year'", $connection);
+    $a = SummHours("SELECT plannedHours, realHours FROM `Loads` WHERE tkey='tkey' AND year='$year'", $connection);
+
+    $line = ["name" => "$name", "infoWorkPlaces" => "$infoWorkPlaces", "stake" => "$stake", 
     "hoursOnStake" => "", "hours" => "", 
     "bHoursPlaned" => $b[0], "bHoursReal" => $b[1], "bHoursDiff" => $b[2], 
     "cHoursPlaned" => $c[0], "cHoursReal" => $c[1], "cHoursDiff" => $c[2], 
     "hoursPlaned" => $a[0], "hoursReal" => $a[1], "hoursDiff" => $a[2], 
-    "year" => "2022"];
+    "year" => $year];
     array_push($data, $line);
 }
     
