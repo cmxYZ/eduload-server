@@ -41,8 +41,7 @@ file_put_contents('data.json', $json);
 }
 
 $get_data = file_get_contents('data.json');
-$result = json_decode($get_data);
-echo $result;
+echo $get_data;
 
 
 
