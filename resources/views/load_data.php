@@ -27,8 +27,8 @@ foreach ($result as $row)
     $stake = $row[6];
 
     $b = SummHours("SELECT plannedHours, realHours FROM `Loads` WHERE tkey='$tkey' AND compensationType='бюджет' AND year='$year'", $connection);
-    $c = SummHours("SELECT plannedHours, realHours FROM `Loads` WHERE tkey='tkey' AND compensationType='контракт' AND year='$year'", $connection);
-    $a = SummHours("SELECT plannedHours, realHours FROM `Loads` WHERE tkey='tkey' AND year='$year'", $connection);
+    $c = SummHours("SELECT plannedHours, realHours FROM `Loads` WHERE tkey='$tkey' AND compensationType='контракт' AND year='$year'", $connection);
+    $a = SummHours("SELECT plannedHours, realHours FROM `Loads` WHERE tkey='$tkey' AND year='$year'", $connection);
 
     $line = ["name" => "$name", "infoWorkPlaces" => "$infoWorkPlaces", "stake" => "$stake", 
     "hoursOnStake" => "default", "hours" => "default", 
