@@ -18,10 +18,10 @@ $result = $result->fetch_all();
 
 foreach ($result as $row)
 {
-    $tkey = $row['tkey'];
-    $name = $row['lastName'] . $row['firstName'] . $row['patronymic'];
-    $infoWorkPlaces = $row['infoWorkPlaces'];
-    $stake = $row['stake'];
+    $tkey = $row[0];
+    $name = $row[2] . $row[3] . $row[4];
+    $infoWorkPlaces = $row[7];
+    $stake = $row[6];
 
     $b = SummHours("SELECT plannedHours, realHours FROM `Loads` WHERE tkey='$tkey' AND compensationType='бюджет' AND year='$year'", $connection);
     $c = SummHours("SELECT plannedHours, realHours FROM `Loads` WHERE tkey='tkey' AND compensationType='контракт' AND year='$year'", $connection);
