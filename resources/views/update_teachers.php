@@ -26,10 +26,28 @@ if (file_exists('teachers.json'))
             mysqli_query($connection, $sql);
         }
 
+        $year = '';
+
+        if ((int)date('n') >= 9)
+        {
+            $year = (int)date('o');
+        }
+        else 
+        {
+            $year = (int)date('o') - 1;
+        }
+
+        $sql = "INSERT INTO `Stakes` (`stake`, `year`, `tkey`) VALUES ('$value->stake', '$year', '$value->tkey')";
+        mysqli_query($connection, $sql);
+
+
+
         $sql = "INSERT INTO `Teachers` (`tkey`, `guidPerson1C`, `lastName`, `firstName`, `patronymic`, `samAccountName`, `stake`, `infoWorkPlaces`) 
         VALUES ('$value->tkey', '$value->guidPerson1C', '$value->lastName', '$value->firstName', '$value->patronymic', 
         '$value->samAccountName', '$value->stake', '$InfoWorkPlaces')";
         
+        
+
         try {
         mysqli_query($connection, $sql);
         } catch (Exception $e) {
