@@ -36,7 +36,7 @@ foreach ($result as $row)
     "year" => $year];
     array_push($data, $line);
 }
-$json = json_encode($data);
+$json = json_encode($data, JSON_UNESCAPED_UNICODE);
 file_put_contents('data.json', $json);
 }
 
