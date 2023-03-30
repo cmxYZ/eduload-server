@@ -36,8 +36,7 @@ foreach ($result as $row)
     array_push($data, $line);
 }
     
-$json = json_encode($data);
-echo $json;
+var_dump($data);
 
 function SummHours($sql, $connection)
 {
