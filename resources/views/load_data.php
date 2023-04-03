@@ -24,14 +24,18 @@ foreach ($result as $row)
     $tkey = $row[0];
     $name = $row[2] . ' ' .  $row[3] . ' ' . $row[4];
     $infoWorkPlaces = $row[7];
-    $stake = $row[6];
+    $stake = '-';
+    if ($row[6] != null && $row[6] != '') 
+    {
+        $stake = $row[6];
+    }
 
     $b = SummHours("SELECT plannedHours, realHours FROM `Loads` WHERE tkey='$tkey' AND compensationType='бюджет' AND year='$year'", $connection);
     $c = SummHours("SELECT plannedHours, realHours FROM `Loads` WHERE tkey='$tkey' AND compensationType='контракт' AND year='$year'", $connection);
     $a = SummHours("SELECT plannedHours, realHours FROM `Loads` WHERE tkey='$tkey' AND year='$year'", $connection);
 
     $line = ["name" => "$name", "infoWorkPlaces" => "$infoWorkPlaces", "stake" => "$stake", 
-    "hoursOnStake" => "default", "hours" => "default", 
+    "hoursOnStake" => "-", "hours" => "-", 
     "bHoursPlaned" => $b[0], "bHoursReal" => $b[1], "bHoursDiff" => $b[2], 
     "cHoursPlaned" => $c[0], "cHoursReal" => $c[1], "cHoursDiff" => $c[2], 
     "hoursPlaned" => $a[0], "hoursReal" => $a[1], "hoursDiff" => $a[2], 
@@ -57,5 +61,8 @@ function SummHours($sql, $connection)
         $real += (float)$row[1];
     }
     $diff = $planed-$real;
-    return ["$planed", "$real", "$diff"];
+    round($real, 3);
+    round($planed, 3);
+    round($diff, 3);
+    return [$planed, $real, $diff];
 }
