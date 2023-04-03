@@ -61,8 +61,8 @@ function SummHours($sql, $connection)
         $real += (float)$row[1];
     }
     $diff = $planed-$real;
-    round($real, 3);
-    round($planed, 3);
-    round($diff, 3);
+    $real = round($real, 3);
+    $planed = round($planed, 3);
+    $diff = round($diff, 3);
     return [$planed, $real, $diff];
 }
