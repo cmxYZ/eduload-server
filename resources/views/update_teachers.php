@@ -17,7 +17,7 @@ if (file_exists('teachers.json'))
     $result = json_decode($get_data);
 
     foreach ($result as $value) {
-        $InfoWorkPlaces = "$value->post($value->workPlace)";
+        $InfoWorkPlaces = "$value->post: $value->stake ($value->workPlace)";
 
         if ($value->guidPerson1C != null && $value->guidPhysPerson1C != null) {
             $sql = "INSERT INTO `PhysFace1C` (`guidPhysFace1C`, `guidPerson1C`, `postName`, `workPlace`, `year`, `stake`, `hours`) 
