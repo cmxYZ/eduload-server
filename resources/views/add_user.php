@@ -24,3 +24,4 @@ if (isset($_POST["login"]) && isset($_POST["samAccauntName"]) && isset($_POST["i
 } catch (Exception $e) {
 }
 }
+else echo 'it Works';
