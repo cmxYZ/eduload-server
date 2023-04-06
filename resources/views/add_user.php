@@ -13,7 +13,7 @@ if ($connection->connect_error) {
 }
 
     $login = $_GET["login"];
-    $id = $_GET["samAccauntName"];
+    $id = $_GET["samAccountName"];
     $iskc = $_GET["isKeycloak"];
 
     $sql = "INSERT INTO `Users` (`login`, `roleID`, `samAccountName`, `password`, `isKeycloak`) VALUES ('$login', NULL, '$id', NULL, '$iskc')";
