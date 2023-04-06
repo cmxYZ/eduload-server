@@ -35,7 +35,7 @@ foreach ($result as $row)
     $a = SummHours("SELECT plannedHours, realHours FROM `Loads` WHERE tkey='$tkey' AND year='$year'", $connection);
 
     $line = ["name" => "$name", "infoWorkPlaces" => "$infoWorkPlaces", "stake" => "$stake", 
-    "hoursOnStake" => "-", "hours" => "-", 
+    "hoursOnStake" => "0", "hours" => "0", 
     "bHoursPlaned" => $b[0], "bHoursReal" => $b[1], "bHoursDiff" => $b[2], 
     "cHoursPlaned" => $c[0], "cHoursReal" => $c[1], "cHoursDiff" => $c[2], 
     "hoursPlaned" => $a[0], "hoursReal" => $a[1], "hoursDiff" => $a[2], 

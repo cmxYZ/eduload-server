@@ -18,3 +18,4 @@ Route::get('/loads', function () { return view('loads'); } );
 Route::get('/updateteachers', function () { return view('update_teachers'); } );
 Route::get('/updateloads', function () { return view('update_loads'); } );
 Route::get('/loaddata', function () { return view('load_data'); } );
+Route::get('/adduser', function () { return view('add_user'); } );

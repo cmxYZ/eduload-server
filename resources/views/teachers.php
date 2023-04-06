@@ -10,6 +10,7 @@ if (!file_exists('teachers.json'))
 
     $result = curl_exec($ch);
     curl_close($ch);
+    
     if ($result != false)
     {
         file_put_contents('teachers.json', $result);
