@@ -12,11 +12,11 @@ if ($connection->connect_error) {
     die('Error: Database connection failed: ' . $connection->connect_error);
 }
 
-if (isset($_POST["login"]) && isset($_POST["samAccauntName"]) && isset($_POST["isKeycloak"]))
+if (isset($_GET["login"]) && isset($_GET["samAccauntName"]) && isset($_GET["isKeycloak"]))
 {
-    $login = $_POST["login"];
-    $id = $_POST["samAccauntName"];
-    $iskc = $_POST["isKeycloak"];
+    $login = $_GET["login"];
+    $id = $_GET["samAccauntName"];
+    $iskc = $_GET["isKeycloak"];
 
     $sql = "INSERT INTO `Users` (`login`, `roleID`, `samAccountName`, `password`, `isKeycloak`) VALUES ('$login', NULL, '$id', NULL, '$iskc')";
     try {
