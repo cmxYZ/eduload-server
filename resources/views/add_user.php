@@ -17,7 +17,5 @@ if ($connection->connect_error) {
     $iskc = $_GET["isKeycloak"];
 
     $sql = "INSERT INTO `Users` (`login`, `roleID`, `samAccountName`, `password`, `isKeycloak`) VALUES ('$login', NULL, '$id', NULL, '$iskc')";
-    try {
+
     mysqli_query($connection, $sql);
-} catch (Exception $e) {
-}
