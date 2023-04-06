@@ -12,8 +12,6 @@ if ($connection->connect_error) {
     die('Error: Database connection failed: ' . $connection->connect_error);
 }
 
-if (isset($_GET["login"]) && isset($_GET["samAccauntName"]) && isset($_GET["isKeycloak"]))
-{
     $login = $_GET["login"];
     $id = $_GET["samAccauntName"];
     $iskc = $_GET["isKeycloak"];
@@ -23,5 +21,3 @@ if (isset($_GET["login"]) && isset($_GET["samAccauntName"]) && isset($_GET["isKe
     mysqli_query($connection, $sql);
 } catch (Exception $e) {
 }
-}
-else echo 'it Works';
