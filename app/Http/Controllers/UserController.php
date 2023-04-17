@@ -27,6 +27,9 @@ class UserController extends Controller
 
     public function updatedatajson()
     {
+        if (file_exists('data.json')) {
+            unlink('data.json');
+        }
         $year = "2022";
         $data = array();
         $result = DB::select("SELECT * FROM `Teachers`");

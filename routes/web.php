@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [UserController::class, 'index'])->name('index');
 Route::get('/loaddata', [UserController::class, 'load_data'])->name('load_data');
+Route::get('/updatedatajson', [UserController::class, 'updatedatajson'])->name('update_data_json');
 Route::get('/checkuser', [UserController::class, 'check_user'])->name('check_user');
 
 Route::get('/updatedb', [AdminController::class, 'update_db'] )->name('update_db');
