@@ -9,7 +9,7 @@
 </head>
 <body>
     <?php
-    http_response_code()
+    echo http_response_code()
     ?>
 </body>
 </html>
