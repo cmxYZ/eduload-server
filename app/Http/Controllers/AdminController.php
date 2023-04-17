@@ -9,9 +9,9 @@ class AdminController extends Controller
 {
     public function update_db()
     {
-        DB::statement("TRUNCATE ` Loads `");
-        DB::statement("TRUNCATE ` PhysFace1C `");
-        DB::statement("TRUNCATE ` Teachers `");
+        DB::statement("TRUNCATE `Loads`");
+        DB::statement("TRUNCATE `PhysFace1C`");
+        DB::statement("TRUNCATE `Teachers`");
         $this->update_loads('2022');
         $this->update_teachers();
         app('App\Http\Controllers\UserController')->updatedatajson();
