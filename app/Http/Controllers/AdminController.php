@@ -38,9 +38,8 @@ class AdminController extends Controller
         '$value->samAccountName', '$value->stake', '$InfoWorkPlaces')");
             } catch (\Illuminate\Database\QueryException $ex) {
                 $result = DB::select("SELECT `infoWorkPlaces`, `stake` FROM `Teachers` WHERE `tkey` = '$value->tkey'");
-                dd($result);
-                $InfoWorkPlaces = $result[0] . ", $InfoWorkPlaces";
-                $stake = (float)$result[1] + (float)$value->stake;
+                $InfoWorkPlaces = $result[0]->infoWorkPlaces . ", $InfoWorkPlaces";
+                $stake = (float)$result[0]->stake + (float)$value->stake;
                 DB::update("UPDATE `Teachers` SET `infoWorkPlaces` = '$InfoWorkPlaces' WHERE `Teachers`.`tkey` = '$value->tkey'");
                 DB::update("UPDATE `Teachers` SET `stake` = '$stake' WHERE `Teachers`.`tkey` = '$value->tkey'");
             }
