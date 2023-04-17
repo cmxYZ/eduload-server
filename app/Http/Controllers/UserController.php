@@ -22,7 +22,11 @@ class UserController extends Controller
 
     public function check_user()
     {
-        return view('check_user');
+        $login = request()->get('login');
+        $id = request()->get('samAccountName');
+        DB::insert("INSERT IGNORE INTO `Users` (`login`, `roleID`, `samAccountName`, `password`, `isKeycloak`) VALUES ('$login', NULL, '$id', NULL, '1')");
+
+        return 'Success';
     }
 
     public function updatedatajson()
