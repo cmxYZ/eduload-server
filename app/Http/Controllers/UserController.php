@@ -39,11 +39,7 @@ class UserController extends Controller
             $tkey = $row->tkey;
             $name = $row->firstName . ' ' .  $row->patronymic . ' ' . $row->lastName;
             $infoWorkPlaces = $row->infoWorkPlaces;
-            $stake = $row->stake ?? '-';
-//            if ($row->stake != null && $row->stake != '')
-//            {
-//                $stake = $row->stake;
-//            }
+            $stake = $row->stake == '' ? '-' : $row->stake;
 
             $b = $this->SummHours("SELECT plannedHours, realHours FROM `Loads` WHERE tkey='$tkey' AND compensationType='бюджет' AND year='$year'");
             $c = $this->SummHours("SELECT plannedHours, realHours FROM `Loads` WHERE tkey='$tkey' AND compensationType='контракт' AND year='$year'");
