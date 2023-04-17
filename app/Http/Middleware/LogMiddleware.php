@@ -9,7 +9,7 @@ class LogMiddleware
 {
     public function handle(Request $request, Closure $next)
     {
-        info('Запрос ', $request->url(), $request->all());
+        info('Запрос ', [$request->url(), $request->all()]);
         return $next($request);
     }
 }
