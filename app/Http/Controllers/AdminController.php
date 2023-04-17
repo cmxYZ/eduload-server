@@ -36,7 +36,7 @@ class AdminController extends Controller
                 DB::insert("INSERT INTO `Teachers` (`tkey`, `guidPerson1C`, `lastName`, `firstName`, `patronymic`, `samAccountName`, `stake`, `infoWorkPlaces`)
         VALUES ('$value->tkey', '$value->guidPerson1C', '$value->lastName', '$value->firstName', '$value->patronymic',
         '$value->samAccountName', '$value->stake', '$InfoWorkPlaces')");
-            } catch (Exception $e) {
+            } catch (\Illuminate\Database\QueryException $ex) {
                 $result = DB::select("SELECT `infoWorkPlaces`, `stake` FROM `Teachers` WHERE `tkey` = '$value->tkey'");
                 $InfoWorkPlaces = $result->infoWorkPlaces . ", $InfoWorkPlaces";
                 $stake = (float)$result->stake + (float)$value->stake;
