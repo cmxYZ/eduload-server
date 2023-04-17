@@ -59,6 +59,8 @@ class AdminController extends Controller
                 foreach ($teacher->loads as $load) {
                     $formingDivisionuuid = $load->formingDivision->uuid;
                     $readingDivisionuuid = $load->readingDivision->uuid;
+                    $formingDivisionname = $load->formingDivision->name;
+                    $readingDivisionname = $load->readingDivision->name;
                     $groupsHistory = implode(", ", $load->groupHistory);
                     $disciplineName = $load->disciplineName;
                     $compensationType = $load->compensationType;
@@ -70,8 +72,8 @@ class AdminController extends Controller
                 `disciplineName`, `compensationType`, `loadType`, `plannedHours`, `realHours`, `semester`, `year`, `tkey`)
                 VALUES ('$guidPhysFace1C', '$formingDivisionuuid', '$readingDivisionuuid', '$groupsHistory', '$disciplineName',
                 '$compensationType', '$loadType', '$plannedHours', '$realHours', '$semester', '$year', '$tkey')");
-                    DB::insert("INSERT IGNORE INTO `Divisions` (`uuid`, `name`) VALUES ('$load->formingDivision->uuid', '$load->formingDivision->name')");
-                    DB::insert("INSERT IGNORE INTO `Divisions` (`uuid`, `name`) VALUES ('$load->readingDivision->uuid', '$load->readingDivision->name')");
+                    DB::insert("INSERT IGNORE INTO `Divisions` (`uuid`, `name`) VALUES ('$formingDivisionuuid', '$formingDivisionname')");
+                    DB::insert("INSERT IGNORE INTO `Divisions` (`uuid`, `name`) VALUES ('$readingDivisionuuid', '$readingDivisionname')");
                 }
             }
         }
