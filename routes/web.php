@@ -1,21 +1,22 @@
 <?php
 
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
 
-Route::get('/', function () { return view('welcome'); } );
+
+Route::get('/', [UserController::class, 'index'])->name('index');
+Route::get('/loaddata', [UserController::class, 'load_data'])->name('load_data');
+Route::get('/checkuser', [UserController::class, 'check_user'])->name('check_user');
+
+Route::get('/updatedb', [AdminController::class, 'update_db'] )->name('update_db');
+
 Route::get('/teachers', function () { return view('teachers'); } );
 Route::get('/loads', function () { return view('loads'); } );
 Route::get('/updateteachers', function () { return view('update_teachers'); } );
 Route::get('/updateloads', function () { return view('update_loads'); } );
-Route::get('/loaddata', function () { return view('load_data'); } );
-Route::get('/adduser', function () { return view('add_user'); } );
+
+
+
+//Route::get('/url', [UserController::class, 'index'])->name('user.url');
+//php artisan make:controller UserController
