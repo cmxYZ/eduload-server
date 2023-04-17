@@ -116,7 +116,7 @@ class AdminController extends Controller
         foreach ($result as $row)
         {
             $tkey = $row->tkey;
-            $name = $row->firstName . ' ' .  $row->patronymic . ' ' . $row->lastName;
+            $name = $row->lastName . ' ' .  $row->firstName . ' ' . $row->patronymic;
             $infoWorkPlaces = $row->infoWorkPlaces;
             $stake = $row->stake == '' ? '-' : $row->stake;
 

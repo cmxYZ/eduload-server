@@ -7,10 +7,11 @@ use Illuminate\Support\Facades\Route;
 //UserController
 Route::view('/', 'home');
 Route::get('/loaddata', [UserController::class, 'load_data'])->name('load_data');
-Route::get('/updatedatajson', [UserController::class, 'updatedatajson'])->name('update_data_json');
+
 Route::get('/checkuser', [UserController::class, 'check_user'])->name('check_user');
 
 //AdminController
+Route::get('/updatejson', [AdminController::class, 'updatedatajson'])->name('update_json');
 Route::get('/updatedb', [AdminController::class, 'update'] )->name('update_db');
 
 //Route::get('/teachers', function () { return view('teachers'); } );
