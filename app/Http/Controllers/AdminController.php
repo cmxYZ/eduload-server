@@ -53,7 +53,7 @@ class AdminController extends Controller
             $year = $value->year;
             $semester = $value->semester;
             foreach ($value->teachers as $teacher) {
-                $guidPhysFace1C = $teacher->guidPhysFace1C;
+                $guidPerson1C = $teacher->guidPerson1C;
                 $samAccountName = $teacher->samAccountName;
                 $tkey = $teacher->tkey;
                 foreach ($teacher->loads as $load) {
@@ -70,7 +70,7 @@ class AdminController extends Controller
 
                     DB::insert("INSERT INTO `Loads` (`guidPhysFace1C`, `formingDivisionuuid`, `readingDivisionuuid`, `groupsHistory`,
                 `disciplineName`, `compensationType`, `loadType`, `plannedHours`, `realHours`, `semester`, `year`, `tkey`)
-                VALUES ('$guidPhysFace1C', '$formingDivisionuuid', '$readingDivisionuuid', '$groupsHistory', '$disciplineName',
+                VALUES ('$guidPerson1C', '$formingDivisionuuid', '$readingDivisionuuid', '$groupsHistory', '$disciplineName',
                 '$compensationType', '$loadType', '$plannedHours', '$realHours', '$semester', '$year', '$tkey')");
                     DB::insert("INSERT IGNORE INTO `Divisions` (`uuid`, `name`) VALUES ('$formingDivisionuuid', '$formingDivisionname')");
                     DB::insert("INSERT IGNORE INTO `Divisions` (`uuid`, `name`) VALUES ('$readingDivisionuuid', '$readingDivisionname')");
