@@ -68,7 +68,7 @@ class AdminController extends Controller
                     $plannedHours = $load->plannedHours;
                     $realHours = $load->realHours;
 
-                    DB::insert("INSERT INTO `Loads` (`guidPhysFace1C`, `formingDivisionuuid`, `readingDivisionuuid`, `groupsHistory`,
+                    DB::insert("INSERT INTO `Loads` (`guidPerson1C`, `formingDivisionuuid`, `readingDivisionuuid`, `groupsHistory`,
                 `disciplineName`, `compensationType`, `loadType`, `plannedHours`, `realHours`, `semester`, `year`, `tkey`)
                 VALUES ('$guidPerson1C', '$formingDivisionuuid', '$readingDivisionuuid', '$groupsHistory', '$disciplineName',
                 '$compensationType', '$loadType', '$plannedHours', '$realHours', '$semester', '$year', '$tkey')");
