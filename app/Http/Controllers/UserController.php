@@ -31,7 +31,7 @@ class UserController extends Controller
         }
     }
 
-    public function load_data_by_tkey(string $tkey) {
+    public function load_data_by_tkey() {
         if (!isset($_GET['tkey']))
         {
             return 'No Data';
