@@ -41,40 +41,31 @@ class UserController extends Controller
         $result = DB::select("SELECT `disciplineName`, `groupsHistory`, `semester`, `loadType`, `formingDivisionuuid`, `readingDivisionuuid`,
        `compensationType`, `plannedHours`, `realHours`, `isHour` FROM `Loads` WHERE `tkey` = '$tkey'");
 
-        return json_encode($result, JSON_UNESCAPED_UNICODE);
-//        foreach ($result as $row)
-//        {
-//            $disciplineName = $row->disciplineName;
-//            $groupsHistory = $row->groupsHistory;
-//            $semester = $row->semester;
-//            $loadType = $row->loadType;
-//            $formingDivisionuuid = $row->formingDivisionuuid;
-//            $readingDivisionuuid = $row->readingDivisionuuid;
-//            $compensationType = $row->compensationType;
-//            $tkey = $row->tkey;
-//            $tkey = $row->tkey;
-//            $tkey = $row->tkey;
-//            $tkey = $row->tkey;
-//            $name = $row->lastName;
-//            $infoWorkPlaces = $row->infoWorkPlaces;
-//            $stake = $row->stake;
-//
-//            $line = [
-//                "disciplineName" => "$tkey",
-//                "groupsHistory" => "$name",
-//                "semester" => "$infoWorkPlaces",
-//                "loadType" => "$stake",
-//                "formingDivisionuuid" => "0",
-//                "readingDivisionuuid" => "0",
-//                "compensationType" => $b[0],
-//                "plannedHours" => $b[1],
-//                "realHours" => $b[2],
-//                "diff" => $c[0],
-//                "isHour" => $c[1]
-//                ];
-//            array_push($data, $line);
-//        }
+        foreach ($result as $row)
+        {
+            $planned = $row->plannedHours;
+            $real = $row->realHours;
+            $diff = (float)$planned - (float)$real;
 
+            $forming = DB::select("SELECT `name` FROM `Divisions` WHERE `uuid`='$row->formingDivisionuuid'")[0];
+            $reading = DB::select("SELECT `name` FROM `Divisions` WHERE `uuid`='$row->readingDivisionuuid'")[0];
+
+            $line = [
+                "disciplineName" => "$row->disciplineName",
+                "groupsHistory" => "$row->groupsHistory",
+                "semester" => "$row->semester",
+                "loadType" => "$row->loadType",
+                "formingDivisionuuid" => "$forming->name",
+                "readingDivisionuuid" => "$reading->name",
+                "compensationType" => "$row->compensationType",
+                "plannedHours" => $row->plannedHours,
+                "realHours" => $row->realHours,
+                "diff" => $diff,
+                "isHour" => $row->isHour
+                ];
+            array_push($data, $line);
+        }
+        return json_encode($data, JSON_UNESCAPED_UNICODE);
     }
 
 //{ headerName: "Дисциплина", field: "disciplineName", width: 280, filter: true, floatingFilter: true,},
