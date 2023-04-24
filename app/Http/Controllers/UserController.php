@@ -65,18 +65,10 @@ class UserController extends Controller
                 ];
             array_push($data, $line);
         }
-        return json_encode($data, JSON_UNESCAPED_UNICODE);
+        $fn = DB::select("SELECT 'secondName', 'firstName', 'patronymic' FROM `Teachers` WHERE `tkey` = '$tkey'");
+        $arr = [$data, $fn[0]->secondName . ' ' . $fn[0]->firstName . ' ' . $fn[0]->patronymic];
+        return json_encode($arr, JSON_UNESCAPED_UNICODE);
     }
 
-//{ headerName: "Дисциплина", field: "disciplineName", width: 280, filter: true, floatingFilter: true,},
-//{ headerName: "Академическая группа", field: "groupsHistory", width: 280, filter: true, floatingFilter: true,},
-//{ headerName: "Семестр", field: "semester",  width: 115, filter: true, floatingFilter: true,},
-//{ headerName: "Вид нагрузки", field: "loadType", width: 140, filter: true, floatingFilter: true,},
-//{ headerName: "Формирующая кафедра", field: "formingDivisionuuid", width: 140, filter: true, floatingFilter: true,},
-//{ headerName: "Читающая кафедра", field: "readingDivisionuuid", width: 140, filter: true, floatingFilter: true,},
-//{ headerName: "Тип нагрузки", field: "compensationType", width: 140, filter: true, floatingFilter: true,},
-//{ headerName: "Планируемое кол-во часов", field: "plannedHours", width: 140},
-//{ headerName: "Фактическое кол-во часов", field: "realHours", editable: true, width: 140},
-//{ headerName: "Разница", field: "diff", width: 140},
-//{ headerName: "Почасовая оплата", field: "isHour", width: 140},
+
 }
