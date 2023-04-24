@@ -66,7 +66,7 @@ class UserController extends Controller
             array_push($data, $line);
         }
         $fn = DB::select("SELECT 'lastName', 'firstName', 'patronymic' FROM `Teachers` WHERE `tkey` = '$tkey'");
-        $arr = [$data, $fn[0]->secondName . ' ' . $fn[0]->firstName . ' ' . $fn[0]->patronymic];
+        $arr = [$data, $fn[0]->lastName . ' ' . $fn[0]->firstName . ' ' . $fn[0]->patronymic];
         return json_encode($arr, JSON_UNESCAPED_UNICODE);
     }
 
