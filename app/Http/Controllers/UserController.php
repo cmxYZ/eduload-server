@@ -23,9 +23,11 @@ class UserController extends Controller
             $b = $this->SummHours("SELECT plannedHours, realHours FROM `Loads` WHERE tkey='$tkey' AND compensationType='бюджет' AND year='$year'");
             $c = $this->SummHours("SELECT plannedHours, realHours FROM `Loads` WHERE tkey='$tkey' AND compensationType='контракт' AND year='$year'");
             $a = $this->SummHours("SELECT plannedHours, realHours FROM `Loads` WHERE tkey='$tkey' AND year='$year'");
+            $h = DB::select("SELECT hours FROM PhysFace1C WHERE guidPerson1C='$row->guidPerson1C'");
+            $hours = $b[0] - (float)$h[0]->hours;
 
             $line = ["tkey" => "$tkey", "name" => "$name", "infoWorkPlaces" => "$infoWorkPlaces", "stake" => "$stake",
-                "hoursOnStake" => "0", "hours" => "0",
+                "hoursOnStake" => "0", "hours" => $hours,
                 "bHoursPlaned" => $b[0], "bHoursReal" => $b[1], "bHoursDiff" => $b[2],
                 "cHoursPlaned" => $c[0], "cHoursReal" => $c[1], "cHoursDiff" => $c[2],
                 "hoursPlaned" => $a[0], "hoursReal" => $a[1], "hoursDiff" => $a[2],
