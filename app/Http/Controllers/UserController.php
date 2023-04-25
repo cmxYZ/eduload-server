@@ -36,7 +36,7 @@ class UserController extends Controller
                 "bHoursPlaned" => $b[0], "bHoursReal" => $b[1], "bHoursDiff" => $b[2],
                 "cHoursPlaned" => $c[0], "cHoursReal" => $c[1], "cHoursDiff" => $c[2],
                 "hoursPlaned" => $a[0], "hoursReal" => $a[1], "hoursDiff" => $a[2],
-                "year" => $year];
+                "year" => $year, "guidPerson1C" => $row->guidPerson1C];
             array_push($data, $line);
         }
         $json = json_encode($data, JSON_UNESCAPED_UNICODE);
