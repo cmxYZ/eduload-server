@@ -78,7 +78,7 @@ class UserController extends Controller
 
             $forming = DB::select("SELECT `name` FROM `Divisions` WHERE `uuid`='$row->formingDivisionuuid'")[0];
             $reading = DB::select("SELECT `name` FROM `Divisions` WHERE `uuid`='$row->readingDivisionuuid'")[0];
-            
+
             $line = [
                 "disciplineName" => "$row->disciplineName",
                 "groupsHistory" => "$row->groupsHistory",
