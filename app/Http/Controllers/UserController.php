@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use function PHPUnit\Framework\isEmpty;
 
 class UserController extends Controller
 {
@@ -24,7 +25,11 @@ class UserController extends Controller
             $c = $this->SummHours("SELECT plannedHours, realHours FROM `Loads` WHERE tkey='$tkey' AND compensationType='контракт' AND year='$year'");
             $a = $this->SummHours("SELECT plannedHours, realHours FROM `Loads` WHERE tkey='$tkey' AND year='$year'");
             $h = DB::select("SELECT hours FROM PhysFace1C WHERE guidPerson1C='$row->guidPerson1C'");
-            $hours = $b[0] - (float)$h[0]->hours;
+            $hours = 0;
+            if (empty($h))
+                $hours = $b[0];
+            else
+                $hours = $b[0] - (float)$h[0]->hours;
 
             $line = ["tkey" => "$tkey", "name" => "$name", "infoWorkPlaces" => "$infoWorkPlaces", "stake" => "$stake",
                 "hoursOnStake" => "0", "hours" => $hours,
