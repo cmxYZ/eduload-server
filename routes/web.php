@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 Route::view('/', 'home');
 Route::get('/loaddata', [UserController::class, 'load_data'])->name('load_data');
 Route::get('/loaddatabytkey', [UserController::class, 'load_data_by_tkey'])->name('load_data_by_tkey');
+Route::get('/changehours', [UserController::class, 'change_hours'])->name('change_hours');
 
 Route::get('/checkuser', [UserController::class, 'check_user'])->name('check_user');
 

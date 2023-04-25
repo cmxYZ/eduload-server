@@ -114,4 +114,10 @@ class UserController extends Controller
         $diff = round($diff, 3);
         return [$planed, $real, $diff];
     }
+
+    public function change_hours() {
+        $value = request()->get('value');
+        $guidPerson1C = request()->get('guidPerson1C');
+        DB::update("UPDATE `PhysFace1C` SET `hours` = '$value' WHERE `PhysFace1C`.`guidPerson1C` = '$guidPerson1C'");
+    }
 }
