@@ -12,7 +12,6 @@ Route::get('/loaddatabytkey', [UserController::class, 'load_data_by_tkey'])->nam
 Route::get('/checkuser', [UserController::class, 'check_user'])->name('check_user');
 
 //AdminController
-Route::get('/updatejson', [AdminController::class, 'updatedatajson'])->name('update_json');
 Route::get('/updatedb', [AdminController::class, 'update'] )->name('update_db');
 
 //Route::get('/teachers', function () { return view('teachers'); } );
