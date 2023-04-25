@@ -78,6 +78,8 @@ class UserController extends Controller
 
             $forming = DB::select("SELECT `name` FROM `Divisions` WHERE `uuid`='$row->formingDivisionuuid'")[0];
             $reading = DB::select("SELECT `name` FROM `Divisions` WHERE `uuid`='$row->readingDivisionuuid'")[0];
+            $info = DB::select("SELECT `` FROM `Divisions` WHERE `uuid`='$row->readingDivisionuuid'")[0];
+
 
             $line = [
                 "disciplineName" => "$row->disciplineName",
@@ -94,9 +96,7 @@ class UserController extends Controller
                 ];
             array_push($data, $line);
         }
-        $fn = DB::select("SELECT `lastName`, `firstName`, `patronymic` FROM `Teachers` WHERE `tkey` = '$tkey';");
-        $arr = [$data, $fn[0]->lastName . ' ' . $fn[0]->firstName . ' ' . $fn[0]->patronymic];
-        return json_encode($arr, JSON_UNESCAPED_UNICODE);
+        return json_encode($data, JSON_UNESCAPED_UNICODE);
     }
 
     public function SummHours($sql)
