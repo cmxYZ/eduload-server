@@ -11,7 +11,7 @@ class UserController extends Controller
     public function load_data()
     {
         if (file_exists('data.json')) {
-            app()->call('App\Http\Controllers\AdminController@update_json');
+            //app()->call('App\Http\Controllers\AdminController@update_json');
             return file_get_contents('data.json');
         }
         return 'No data';
@@ -74,6 +74,19 @@ class UserController extends Controller
         $value = request()->get('value');
         $guidPerson1C = request()->get('guidPerson1C');
         DB::update("UPDATE `PhysFace1C` SET `hours` = '$value' WHERE `PhysFace1C`.`guidPerson1C` = '$guidPerson1C'");
+
+        $json = file_get_contents('data.json');
+        $data = json_decode($json);
+        foreach ($data as $row)
+        {
+            if ($row->guidPerson1C == $guidPerson1C)
+            {
+                $row->hoursOnStake = $value;
+                $row->hours = $row->bHoursPlaned - $row->hoursOnStake;
+            }
+        }
+        $json = json_encode($data, JSON_UNESCAPED_UNICODE);
+        file_put_contents('data.json', $json);
     }
 
 
