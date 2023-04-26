@@ -11,7 +11,7 @@ class UserController extends Controller
     public function load_data()
     {
         if (file_exists('data.json')) {
-            app()->call('App\Http\Controllers\Controller\AdminController@update_json');
+            app()->call('App\Http\Controllers\AdminController@update_json');
             return file_get_contents('data.json');
         }
         return 'No data';
