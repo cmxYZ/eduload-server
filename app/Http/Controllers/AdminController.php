@@ -141,4 +141,22 @@ class AdminController extends Controller
         $json = json_encode($data, JSON_UNESCAPED_UNICODE);
         file_put_contents('data.json', $json);
     }
+
+    public function SummHours($sql)
+    {
+        $real = 0;
+        $planed = 0;
+        $result = DB::select($sql);
+        foreach ($result as $row)
+        {
+            $planed += (float)$row->plannedHours;
+            $real += (float)$row->realHours;
+        }
+        $diff = $planed-$real;
+        $real = round($real, 3);
+        $planed = round($planed, 3);
+        $diff = round($diff, 3);
+        return [$planed, $real, $diff];
+    }
+
 }
