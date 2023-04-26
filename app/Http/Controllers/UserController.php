@@ -49,9 +49,9 @@ class UserController extends Controller
             $real = $row->realHours;
             $diff = (float)$planned - (float)$real;
 
-            $plannedHours = $row->plannedHours ?? 0;
-            $realHours = $row->realHours ?? 0;
-            
+            $plannedHours = $row->plannedHours == '' ? 0 : $row->plannedHours;
+            $realHours = $row->realHours == '' ? 0 : $row->realHours;
+
             $forming = DB::select("SELECT `name` FROM `Divisions` WHERE `uuid`='$row->formingDivisionuuid'")[0];
             $reading = DB::select("SELECT `name` FROM `Divisions` WHERE `uuid`='$row->readingDivisionuuid'")[0];
 
