@@ -102,4 +102,43 @@ class AdminController extends Controller
         }
         return $year;
     }
+
+    public function update_json()
+    {
+        if (file_exists('data.json')) {
+            unlink('data.json');
+        }
+        $year = "2022";
+        $data = array();
+        $result = DB::select("SELECT * FROM `Teachers`");
+
+        foreach ($result as $row)
+        {
+            $tkey = $row->tkey;
+            $name = $row->lastName . ' ' .  $row->firstName . ' ' . $row->patronymic;
+            $infoWorkPlaces = $row->infoWorkPlaces;
+            $stake = $row->stake == '' ? '-' : $row->stake;
+
+            $b = $this->SummHours("SELECT plannedHours, realHours FROM `Loads` WHERE tkey='$tkey' AND compensationType='бюджет' AND year='$year'");
+            $c = $this->SummHours("SELECT plannedHours, realHours FROM `Loads` WHERE tkey='$tkey' AND compensationType='контракт' AND year='$year'");
+            $a = $this->SummHours("SELECT plannedHours, realHours FROM `Loads` WHERE tkey='$tkey' AND year='$year'");
+            $h = DB::select("SELECT hours FROM PhysFace1C WHERE guidPerson1C='$row->guidPerson1C'");
+            $hoursOnStake = 0;
+
+            if (!empty($h))
+                $hoursOnStake = (float)$h[0]->hours;
+
+            $hours = $b[0] - $hoursOnStake;
+
+            $line = ["tkey" => "$tkey", "name" => "$name", "infoWorkPlaces" => "$infoWorkPlaces", "stake" => "$stake",
+                "hoursOnStake" => $hoursOnStake, "hours" => $hours,
+                "bHoursPlaned" => $b[0], "bHoursReal" => $b[1], "bHoursDiff" => $b[2],
+                "cHoursPlaned" => $c[0], "cHoursReal" => $c[1], "cHoursDiff" => $c[2],
+                "hoursPlaned" => $a[0], "hoursReal" => $a[1], "hoursDiff" => $a[2],
+                "year" => $year, "guidPerson1C" => $row->guidPerson1C];
+            array_push($data, $line);
+        }
+        $json = json_encode($data, JSON_UNESCAPED_UNICODE);
+        file_put_contents('data.json', $json);
+    }
 }

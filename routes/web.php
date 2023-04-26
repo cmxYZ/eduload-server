@@ -14,6 +14,7 @@ Route::get('/checkuser', [UserController::class, 'check_user'])->name('check_use
 
 //AdminController
 Route::get('/updatedb', [AdminController::class, 'update'] )->name('update_db');
+Route::get('/updatejson', [AdminController::class, 'update_json'])->name('update_json');
 
 //Route::get('/teachers', function () { return view('teachers'); } );
 //Route::get('/loads', function () { return view('loads'); } );
