@@ -153,9 +153,9 @@ class AdminController extends Controller
             $real += (float)$row->realHours;
         }
         $diff = $planed-$real;
-        $real = round($real, 3);
-        $planed = round($planed, 3);
-        $diff = round($diff, 3);
+        $real = round($real, 2);
+        $planed = round($planed, 2);
+        $diff = round($diff, 2);
         return [$planed, $real, $diff];
     }
 
