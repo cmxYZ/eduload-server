@@ -92,5 +92,21 @@ class UserController extends Controller
         file_put_contents('data.json', $json);
     }
 
+    public function change_stake() {
+        $value = request()->get('value');
+        $tkey = request()->get('tkey');
+        DB::update("UPDATE `Teachers` SET `stake` = '$value' WHERE `Teachers`.`tkey` = '$tkey'");
 
+        $json = file_get_contents('data.json');
+        $data = json_decode($json);
+        foreach ($data as $row)
+        {
+            if ($row->tkey == $tkey)
+            {
+                $row->stake = $value;
+            }
+        }
+        $json = json_encode($data, JSON_UNESCAPED_UNICODE);
+        file_put_contents('data.json', $json);
+    }
 }
