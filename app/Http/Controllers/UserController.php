@@ -114,6 +114,6 @@ class UserController extends Controller
     public function change_ishour() {
         $value = (int)request()->get('value');
         $id = request()->get('id');
-        DB::update("UPDATE `Loads` SET `isHour` = '$value' WHERE `Loads`.`id` = $id");
+        DB::update("UPDATE `Loads` SET `isHour` = $value WHERE `Loads`.`id` = $id");
     }
 }
