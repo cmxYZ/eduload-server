@@ -112,8 +112,8 @@ class AdminController extends Controller
         $data = array();
         $result = DB::select("SELECT * FROM `Teachers`");
         $allowedDivisions = $this->get_allowed_divisions();
-        var_dump($allowedDivisions);
-        
+        var_dump(in_array('undich18ggl5g0000kaimq8hqbcvlj94', $allowedDivisions));
+
         foreach ($result as $row)
         {
             $tkey = $row->tkey;
