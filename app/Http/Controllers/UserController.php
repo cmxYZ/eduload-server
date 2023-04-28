@@ -110,4 +110,11 @@ class UserController extends Controller
         $json = json_encode($data, JSON_UNESCAPED_UNICODE);
         file_put_contents('data.json', $json);
     }
+
+    public function change_ishour() {
+        $value = request()->get('value');
+        $id = request()->get('id');
+
+        DB::update("UPDATE `Loads` SET `isHour` = '$value' WHERE `Loads`.`id` = '$id'");
+    }
 }

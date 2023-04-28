@@ -10,6 +10,9 @@ Route::get('/loaddata', [UserController::class, 'load_data'])->name('load_data')
 Route::get('/loaddatabytkey', [UserController::class, 'load_data_by_tkey'])->name('load_data_by_tkey');
 Route::get('/changehours', [UserController::class, 'change_hours'])->name('change_hours');
 Route::get('/changestake', [UserController::class, 'change_stake'])->name('change_stake');
+Route::get('/changeishour', [UserController::class, 'change_ishour'])->name('change_ishour');
+
+
 
 Route::get('/checkuser', [UserController::class, 'check_user'])->name('check_user');
 
