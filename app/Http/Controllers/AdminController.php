@@ -111,6 +111,8 @@ class AdminController extends Controller
         $year = "2022";
         $data = array();
         $result = DB::select("SELECT * FROM `Teachers`");
+        $allowedDivisions = DB::select("SELECT * FROM `Divisions` WHERE `rtfParent` = '1'");
+        var_dump($allowedDivisions);
 
         foreach ($result as $row)
         {
