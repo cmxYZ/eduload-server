@@ -45,9 +45,9 @@ class UserController extends Controller
 
         foreach ($result as $row)
         {
-            $planned = round((float)$row->plannedHours, 2);
-            $real = round((float)$row->realHours, 2);
-            $diff = round(($planned - $real), 2);
+            $planned = $row->plannedHours;
+            $real = $row->realHours;
+            $diff = (float)$planned - (float)$real;
 
             $plannedHours = $row->plannedHours == '' ? 0 : $row->plannedHours;
             $realHours = $row->realHours == '' ? 0 : $row->realHours;
@@ -64,9 +64,9 @@ class UserController extends Controller
                 "formingDivisionuuid" => "$forming->name",
                 "readingDivisionuuid" => "$reading->name",
                 "compensationType" => "$row->compensationType",
-                "plannedHours" => $plannedHours,
-                "realHours" => $realHours,
-                "diff" => $diff,
+                "plannedHours" => round($plannedHours, 2),
+                "realHours" => round($realHours, 2),
+                "diff" => round($diff, 2),
                 "isHour" => $row->isHour
                 ];
             array_push($data, $line);
