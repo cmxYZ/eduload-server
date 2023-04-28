@@ -111,9 +111,9 @@ class AdminController extends Controller
         $year = "2022";
         $data = array();
         $result = DB::select("SELECT * FROM `Teachers`");
-        $allowedDivisions = DB::select("SELECT `uuid` FROM `Divisions` WHERE `rtfParent` = '1'");
+        $allowedDivisions = $this->get_allowed_divisions();
         var_dump($allowedDivisions);
-
+        
         foreach ($result as $row)
         {
             $tkey = $row->tkey;
@@ -161,4 +161,14 @@ class AdminController extends Controller
         return [$planed, $real, $diff];
     }
 
+    public function get_allowed_divisions() {
+        $result = DB::select("SELECT `uuid` FROM `Divisions` WHERE `rtfParent` = '1'");
+        $data = array();
+
+        foreach ($result as $row)
+        {
+            array_push($data, $row->uuid);
+        }
+        return $data;
+    }
 }
