@@ -112,7 +112,6 @@ class AdminController extends Controller
         $data = array();
         $result = DB::select("SELECT * FROM `Teachers`");
         $allowedDivisions = $this->get_allowed_divisions();
-        var_dump(in_array('undich18ggl5g0000kaimq8hqbcvlj94', $allowedDivisions));
 
         foreach ($result as $row)
         {
@@ -121,9 +120,12 @@ class AdminController extends Controller
             $infoWorkPlaces = $row->infoWorkPlaces;
             $stake = $row->stake == '' ? '-' : $row->stake;
 
-            $b = $this->SummHours("SELECT plannedHours, realHours FROM `Loads` WHERE tkey='$tkey' AND compensationType='бюджет' AND year='$year'");
-            $c = $this->SummHours("SELECT plannedHours, realHours FROM `Loads` WHERE tkey='$tkey' AND compensationType='контракт' AND year='$year'");
-            $a = $this->SummHours("SELECT plannedHours, realHours FROM `Loads` WHERE tkey='$tkey' AND year='$year'");
+            $b = $this->SummHours("SELECT plannedHours, realHours, readingDivisionuuid FROM `Loads`
+                                                    WHERE tkey='$tkey' AND compensationType='бюджет' AND year='$year'", $allowedDivisions);
+            $c = $this->SummHours("SELECT plannedHours, realHours, readingDivisionuuid FROM `Loads`
+                                                    WHERE tkey='$tkey' AND compensationType='контракт' AND year='$year'", $allowedDivisions);
+            $a = $this->SummHours("SELECT plannedHours, realHours, readingDivisionuuid FROM `Loads`
+                                                    WHERE tkey='$tkey' AND year='$year'", $allowedDivisions);
             $h = DB::select("SELECT hours FROM PhysFace1C WHERE guidPerson1C='$row->guidPerson1C'");
             $hoursOnStake = 0;
 
@@ -144,15 +146,17 @@ class AdminController extends Controller
         file_put_contents('data.json', $json);
     }
 
-    public function SummHours($sql)
+    public function SummHours($sql, $allowedDivisions)
     {
         $real = 0;
         $planed = 0;
         $result = DB::select($sql);
         foreach ($result as $row)
         {
-            $planed += (float)$row->plannedHours;
-            $real += (float)$row->realHours;
+            if (in_array($row->readingDivisionuuid, $allowedDivisions)) {
+                $planed += (float)$row->plannedHours;
+                $real += (float)$row->realHours;
+            }
         }
         $diff = $planed-$real;
         $real = round($real, 2);
