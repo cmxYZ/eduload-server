@@ -40,7 +40,7 @@ class UserController extends Controller
         }
         $tkey = $_GET['tkey'];
         $data = array();
-        $result = DB::select("SELECT `disciplineName`, `groupsHistory`, `semester`, `loadType`, `formingDivisionuuid`, `readingDivisionuuid`,
+        $result = DB::select("SELECT `id`, `disciplineName`, `groupsHistory`, `semester`, `loadType`, `formingDivisionuuid`, `readingDivisionuuid`,
        `compensationType`, `plannedHours`, `realHours`, `isHour` FROM `Loads` WHERE `tkey` = '$tkey'");
 
         foreach ($result as $row)
@@ -56,6 +56,7 @@ class UserController extends Controller
             $reading = DB::select("SELECT `name` FROM `Divisions` WHERE `uuid`='$row->readingDivisionuuid'")[0];
 
             $line = [
+                "id" => "$row->id",
                 "disciplineName" => "$row->disciplineName",
                 "groupsHistory" => "$row->groupsHistory",
                 "semester" => "$row->semester",
