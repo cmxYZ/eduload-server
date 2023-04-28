@@ -45,9 +45,9 @@ class UserController extends Controller
 
         foreach ($result as $row)
         {
-            $planned = round($row->plannedHours, 2);
-            $real = round($row->realHours, 2);
-            $diff = round((float)$planned - (float)$real, 2);
+            $planned = round((float)$row->plannedHours, 2);
+            $real = round((float)$row->realHours, 2);
+            $diff = round(((float)$planned - (float)$real), 2);
 
             $plannedHours = $row->plannedHours == '' ? 0 : $row->plannedHours;
             $realHours = $row->realHours == '' ? 0 : $row->realHours;
