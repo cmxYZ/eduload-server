@@ -7,18 +7,10 @@ use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
 {
-    public function update()
-    {
-        DB::statement("TRUNCATE `Loads`");
-        DB::statement("TRUNCATE `PhysFace1C`");
-        DB::statement("TRUNCATE `Teachers`");
-        $this->update_loads('2022');
-        $this->update_teachers();
-        return 'Success';
-    }
-
     public function update_teachers()
     {
+        DB::statement("TRUNCATE `PhysFace1C`");
+        DB::statement("TRUNCATE `Teachers`");
         $result = $this->load_from_api('http://runp.dit.urfu.ru:8990/api/teachers');
         foreach ($result as $value) {
             $InfoWorkPlaces = "$value->post: $value->stake ($value->workPlace)";
@@ -45,9 +37,10 @@ class AdminController extends Controller
         }
     }
 
-    public function update_loads($filterYear)
+    public function update_loads()
     {
-        $result = $this->load_from_api("http://runp.dit.urfu.ru:8990/api/loads?year=$filterYear");
+        DB::statement("TRUNCATE `Loads`");
+        $result = $this->load_from_api("http://runp.dit.urfu.ru:8990/api/loads?year=2022");
         foreach ($result as $value) {
             $year = $value->year;
             $semester = $value->semester;

@@ -18,7 +18,9 @@ Route::get('/changerealhours', [UserController::class, 'change_realhours'])->nam
 Route::get('/checkuser', [UserController::class, 'check_user'])->name('check_user');
 
 //AdminController
-Route::get('/updatedb', [AdminController::class, 'update'] )->name('update_db');
+Route::get('/updateteachers', [AdminController::class, 'update_teachers'] )->name('update_teachers');
+Route::get('/updateloads', [AdminController::class, 'update_loads'] )->name('update_loads');
+
 Route::get('/updatejson', [AdminController::class, 'update_json'])->name('update_json');
 
 //Route::get('/teachers', function () { return view('teachers'); } );
