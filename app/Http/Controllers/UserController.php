@@ -21,7 +21,8 @@ class UserController extends Controller
     {
         $login = request()->get('login');
         $id = request()->get('samAccountName');
-        DB::insert("INSERT IGNORE INTO `Users` (`login`, `roleID`, `samAccountName`, `password`, `isKeycloak`) VALUES ('$login', NULL, '$id', NULL, '1')");
+        $isKC = request()->get('isKeycloak');
+        DB::insert("INSERT IGNORE INTO `Users` (`login`, `roleID`, `samAccountName`, `password`, `isKeycloak`) VALUES ('$login', NULL, '$id', NULL, '$isKC')");
         $result = DB::select("SELECT `roleID` FROM `Users` WHERE `login` = '$login'");
         if ($result[0]->roleID != null) {
             $id = $result[0]->roleID;
