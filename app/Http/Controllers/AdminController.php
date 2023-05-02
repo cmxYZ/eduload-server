@@ -35,6 +35,7 @@ class AdminController extends Controller
                 DB::update("UPDATE `Teachers` SET `stake` = '$stake' WHERE `Teachers`.`tkey` = '$value->tkey'");
             }
         }
+        $this->update_json();
     }
 
     public function update_loads()
@@ -69,6 +70,7 @@ class AdminController extends Controller
                 }
             }
         }
+        $this->update_json();
     }
 
     public function load_from_api($url)
