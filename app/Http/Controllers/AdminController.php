@@ -65,10 +65,13 @@ class AdminController extends Controller
 
     public function update_loads()
     {
-        $get_year = request()->get('year') ?? '2022';
+        $get_year = request()->get('year');
         $get_tkey = request()->get('tkey');
         $result = '';
-        if ($get_tkey == null) {
+        if ($get_year == null || $get_year == '') {
+            $get_year = '2022';
+        }
+        if ($get_tkey == null || $get_tkey == '') {
             $result = $this->load_from_api("http://runp.dit.urfu.ru:8990/api/loads?year=$get_year");
         }
         else
