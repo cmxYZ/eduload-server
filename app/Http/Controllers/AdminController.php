@@ -65,9 +65,19 @@ class AdminController extends Controller
 
     public function update_loads()
     {
-        $get_year = request()->get('year') ?? '';
-        $get_tkey = request()->get('tkey') ?? '';
-        $result = $this->load_from_api("http://runp.dit.urfu.ru:8990/api/loads?year=$get_year&tkey=$get_tkey");
+        $get_year = request()->get('year') ?? '2022';
+        $get_tkey = request()->get('tkey');
+        $result = '';
+        echo $get_year;
+        echo $get_tkey;
+        if ($get_tkey == null) {
+            $result = $this->load_from_api("http://runp.dit.urfu.ru:8990/api/loads?year=$get_year");
+        }
+        else
+        {
+            $result = $this->load_from_api("http://runp.dit.urfu.ru:8990/api/loads?year=$get_year&tkey=$get_tkey");
+        }
+
 
         foreach ($result as $value) {
             $year = $value->year;
