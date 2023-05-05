@@ -52,7 +52,7 @@ class AdminController extends Controller
             else
             {
                 $sql = DB::select("SELECT `infoWorkPlaces`, `stake` FROM `Teachers` WHERE `tkey` = '$value->tkey'");
-                if (stripos($sql[0]->infoWorkPlaces, $InfoWorkPlaces) == false) {
+                if (!str_contains($sql[0]->infoWorkPlaces, $InfoWorkPlaces)) {
                     $InfoWorkPlaces = $sql[0]->infoWorkPlaces . ", $InfoWorkPlaces";
                     $stake = (float)$sql[0]->stake + (float)$value->stake;
                     DB::update("UPDATE `Teachers` SET `infoWorkPlaces` = '$InfoWorkPlaces', `stake` = '$stake' WHERE `Teachers`.`tkey` = '$value->tkey'");
@@ -68,8 +68,6 @@ class AdminController extends Controller
         $get_year = request()->get('year') ?? '2022';
         $get_tkey = request()->get('tkey');
         $result = '';
-        echo $get_year;
-        echo $get_tkey;
         if ($get_tkey == null) {
             $result = $this->load_from_api("http://runp.dit.urfu.ru:8990/api/loads?year=$get_year");
         }
