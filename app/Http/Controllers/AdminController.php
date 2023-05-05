@@ -65,8 +65,10 @@ class AdminController extends Controller
 
     public function update_loads()
     {
-        DB::statement("TRUNCATE `Loads`");
-        $result = $this->load_from_api("http://runp.dit.urfu.ru:8990/api/loads?year=2022");
+        $get_year = request()->get('year') ?? '';
+        $get_tkey = request()->get('tkey') ?? '';
+        $result = $this->load_from_api("http://runp.dit.urfu.ru:8990/api/loads?year=$get_year&tkey=$get_tkey");
+
         foreach ($result as $value) {
             $year = $value->year;
             $semester = $value->semester;
@@ -74,6 +76,9 @@ class AdminController extends Controller
                 $guidPerson1C = $teacher->guidPerson1C;
                 $samAccountName = $teacher->samAccountName;
                 $tkey = $teacher->tkey;
+                DB::delete("DELETE FROM `Loads` WHERE `year` = '$year'
+                           AND `semester` = '$semester' AND `guidPerson1C` = '$guidPerson1C' AND `samAccountName` = '$samAccountName'
+                           AND `tkey` = '$value->tkey'");
                 foreach ($teacher->loads as $load) {
                     $formingDivisionuuid = $load->formingDivision->uuid;
                     $readingDivisionuuid = $load->readingDivision->uuid;
@@ -90,8 +95,12 @@ class AdminController extends Controller
                 `disciplineName`, `compensationType`, `loadType`, `plannedHours`, `realHours`, `semester`, `year`, `tkey`)
                 VALUES ('$guidPerson1C', '$formingDivisionuuid', '$readingDivisionuuid', '$groupsHistory', '$disciplineName',
                 '$compensationType', '$loadType', '$plannedHours', '$realHours', '$semester', '$year', '$tkey')");
+
                     DB::insert("INSERT IGNORE INTO `Divisions` (`uuid`, `name`) VALUES ('$formingDivisionuuid', '$formingDivisionname')");
                     DB::insert("INSERT IGNORE INTO `Divisions` (`uuid`, `name`) VALUES ('$readingDivisionuuid', '$readingDivisionname')");
+
+
+
                 }
             }
         }
