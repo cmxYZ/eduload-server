@@ -4,36 +4,61 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use function PHPUnit\Framework\isEmpty;
 
 class AdminController extends Controller
 {
     public function update_teachers()
     {
-        DB::statement("TRUNCATE `PhysFace1C`");
-        DB::statement("TRUNCATE `Teachers`");
         $result = $this->load_from_api('http://runp.dit.urfu.ru:8990/api/teachers');
+
         foreach ($result as $value) {
+
+            //PhysFace1C
+            if ($value->guidPerson1C != null && $value->guidPhysPerson1C != null) {
+                $sql = DB::select("SELECT `id` FROM `PhysFace1C` WHERE `guidPhysFace1C` = '$value->guidPhysPerson1C' AND `guidPerson1C` = '$value->guidPerson1C'");
+                if (empty($sql))
+                {
+                    DB::insert("INSERT INTO `PhysFace1C` (`guidPhysFace1C`, `guidPerson1C`, `postName`, `workPlace`, `year`, `stake`, `hours`)
+            VALUES ('$value->guidPhysPerson1C', '$value->guidPerson1C', '$value->post', '$value->workPlace', '', '$value->stake', '')");
+                }
+                else
+                {
+                    DB::update("UPDATE `PhysFace1C` SET `postName` = '$value->post', `workPlace` = '$value->workPlace',
+                        `stake` = '$value->stake' WHERE `guidPhysFace1C` = '$value->guidPhysPerson1C' AND `guidPerson1C` = '$value->guidPerson1C'");
+                }
+            }
+            //PhysFace1C
+
+            //Stakes
+            $year = $this->setYear();
+            $sql = DB::select("SELECT `id` FROM `Stakes` WHERE `year` = '$year' AND `tkey` = '$value->tkey'");
+            if (empty($sql))
+            {
+                DB::insert("INSERT INTO `Stakes` (`stake`, `year`, `tkey`) VALUES ('$value->stake', '$year', '$value->tkey')");
+            }
+            //Stakes
+
+            //Teachers
             $InfoWorkPlaces = "$value->post: $value->stake ($value->workPlace)";
 
-            if ($value->guidPerson1C != null && $value->guidPhysPerson1C != null) {
-                DB::insert("INSERT INTO `PhysFace1C` (`guidPhysFace1C`, `guidPerson1C`, `postName`, `workPlace`, `year`, `stake`, `hours`)
-            VALUES ('$value->guidPhysPerson1C', '$value->guidPerson1C', '$value->post', '$value->workPlace', '', '$value->stake', '')");
-            }
-
-            $year = $this->setYear();
-            DB::insert("INSERT INTO `Stakes` (`stake`, `year`, `tkey`) VALUES ('$value->stake', '$year', '$value->tkey')");
-
-            try {
+            $sql = DB::select("SELECT `tkey` FROM `Teachers` WHERE `tkey` = '$value->tkey'");
+            if (empty($sql))
+            {
                 DB::insert("INSERT INTO `Teachers` (`tkey`, `guidPerson1C`, `lastName`, `firstName`, `patronymic`, `samAccountName`, `stake`, `infoWorkPlaces`)
         VALUES ('$value->tkey', '$value->guidPerson1C', '$value->lastName', '$value->firstName', '$value->patronymic',
         '$value->samAccountName', '$value->stake', '$InfoWorkPlaces')");
-            } catch (\Illuminate\Database\QueryException $ex) {
-                $result = DB::select("SELECT `infoWorkPlaces`, `stake` FROM `Teachers` WHERE `tkey` = '$value->tkey'");
-                $InfoWorkPlaces = $result[0]->infoWorkPlaces . ", $InfoWorkPlaces";
-                $stake = (float)$result[0]->stake + (float)$value->stake;
-                DB::update("UPDATE `Teachers` SET `infoWorkPlaces` = '$InfoWorkPlaces' WHERE `Teachers`.`tkey` = '$value->tkey'");
-                DB::update("UPDATE `Teachers` SET `stake` = '$stake' WHERE `Teachers`.`tkey` = '$value->tkey'");
             }
+            else
+            {
+                $sql = DB::select("SELECT `infoWorkPlaces`, `stake` FROM `Teachers` WHERE `tkey` = '$value->tkey'");
+                if (stripos($sql[0]->infoWorkPlaces, $InfoWorkPlaces) == false) {
+                    $InfoWorkPlaces = $sql[0]->infoWorkPlaces . ", $InfoWorkPlaces";
+                    $stake = (float)$sql[0]->stake + (float)$value->stake;
+                    DB::update("UPDATE `Teachers` SET `infoWorkPlaces` = '$InfoWorkPlaces', `stake` = '$stake' WHERE `Teachers`.`tkey` = '$value->tkey'");
+                }
+            }
+            //Teachers
         }
         $this->update_json();
     }

@@ -6,14 +6,15 @@
     "license": "MIT",
     "require": {
         "php": "^8.0.2",
+        "ext-curl": "*",
+        "ext-mysqli": "*",
         "darkaonline/l5-swagger": "^8.5",
         "guzzlehttp/guzzle": "^7.2",
         "laravel/framework": "^9.19",
         "laravel/sanctum": "^3.0",
         "laravel/tinker": "^2.7",
-        "zircote/swagger-php": "^4.7",
-      "ext-mysqli": "*",
-      "ext-curl": "*"
+        "phpoffice/phpspreadsheet": "^1.28",
+        "zircote/swagger-php": "^4.7"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
