@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use function PHPUnit\Framework\isEmpty;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use \PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class UserController extends Controller
 {
@@ -35,14 +37,19 @@ class UserController extends Controller
     }
 
     public function load_data_by_tkey() {
-        if (!isset($_GET['tkey']))
+        if (!isset($_GET['tkey']) && !isset($_GET['year']))
         {
             return 'No Data';
         }
         $tkey = $_GET['tkey'];
+        $year = $_GET['year'];
+        return get_data_by_tkey($tkey, $year);
+    }
+
+    public function get_data_by_tkey($tkey, $year) {
         $data = array();
         $result = DB::select("SELECT `id`, `disciplineName`, `groupsHistory`, `semester`, `loadType`, `formingDivisionuuid`, `readingDivisionuuid`,
-       `compensationType`, `plannedHours`, `realHours`, `isHour` FROM `Loads` WHERE `tkey` = '$tkey'");
+       `compensationType`, `plannedHours`, `realHours`, `isHour` FROM `Loads` WHERE `tkey` = '$tkey' AND `year` = '$year'");
 
         foreach ($result as $row)
         {
@@ -97,13 +104,14 @@ class UserController extends Controller
     public function change_stake() {
         $value = request()->get('value');
         $tkey = request()->get('tkey');
-        DB::update("UPDATE `Teachers` SET `stake` = '$value' WHERE `Teachers`.`tkey` = '$tkey'");
+        $year = request()->get('year');
+        DB::update("UPDATE `Stakes` SET `stake` = '$value' WHERE `tkey` = '$tkey' AND `year` = '$year'");
 
         $json = file_get_contents('data.json');
         $data = json_decode($json);
         foreach ($data as $row)
         {
-            if ($row->tkey == $tkey)
+            if ($row->tkey == $tkey && $row->year == $year)
             {
                 $row->stake = $value;
             }
@@ -124,5 +132,79 @@ class UserController extends Controller
         $value = request()->get('value');
         $id = (int)request()->get('id');
         DB::update("UPDATE `Loads` SET `realHours` = '$value' WHERE `Loads`.`id` = $id");
+    }
+
+    public function load_excel() {
+        $letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O'];
+        $headers = [
+            'ФИО',
+            'Должность/Место работы',
+            'Ставка',
+            'Часы на ставку',
+            'Кол-во часов на почасовую оплату',
+            'Планируемое кол-во часов (Бюджет)',
+            'Фактическое кол-во часов (Бюджет)',
+            'Разница (Бюджет)',
+            'Планируемое кол-во часов (Контракт)',
+            'Фактическое кол-во часов (Контракт)',
+            'Разница (Контракт)',
+            'Планируемое кол-во часов (Общее)',
+            'Фактическое кол-во часов (Общее)',
+            'Разница (Общее)',
+            'Год'
+        ];
+        $json = $this->load_data();
+        $array = json_decode($json);
+//        $array = [
+//            ['поле 1', 'поле 1', 'поле 1', 'поле 1', 'поле 1', 'поле 1', 'поле 1', 'поле 1', 'поле 1', 'поле 1', 'поле 1', 'поле 1', 'поле 1', 'поле 1', 'поле 1', 'поле 1'],
+//            ['поле 2', 'поле 2', 'поле 2', 'поле 2', 'поле 2', 'поле 2', 'поле 2', 'поле 2', 'поле 2', 'поле 2', 'поле 2', 'поле 2', 'поле 2', 'поле 2', 'поле 2', 'поле 2'],
+//            ['поле 3', 'поле 3', 'поле 3', 'поле 3', 'поле 3', 'поле 3', 'поле 3', 'поле 3', 'поле 3', 'поле 3', 'поле 3', 'поле 3', 'поле 3', 'поле 3', 'поле 3', 'поле 3']
+//        ];
+        $filename = 'Отчет 1.xlsx';
+        return $this->download_file('Отчет 1.xlsx', $letters, $array, $headers);
+    }
+
+    public function load_excel_by_tkey() {
+        $letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K'];
+        $headers = [
+            'Дисциплина',
+            'Академическая группа',
+            'Семестр',
+            'Вид нагрузки',
+            'Формирующая кафедра',
+            'Читающая кафедра',
+            'Тип нагрузки',
+            'Планируемое кол-во часов',
+            'Фактическое кол-во часов',
+            'Разница',
+            'Почасовая оплата',
+        ];
+
+        $tkey = $_GET['tkey'];
+        $year = $_GET['year'];
+        $json = $this->get_data_by_tkey($tkey, $year);
+        $array = json_decode($json);
+
+        $name = DB::select("SELECT `lastName`, `firstName`, `patronymic` FROM `Teachers` WHERE `tkey` = '$tkey'");
+        $filename = 'Нагрузка преподавателя ' . $name->lastName . ' ' . $name->firstName
+            . ' ' . $name->patronymic . ' ' . $year . '.xlsx';
+
+        return $this->download_file($filename, $letters, $array, $headers);
+    }
+
+    public function download_file($filename, $letters, $array, $headers) {
+        $spreadsheet = new Spreadsheet();
+        $worksheet = $spreadsheet->getActiveSheet();
+        for ($i = 0; $i < count($letters); $i++) {
+            $worksheet->setCellValue($letters[$i] . 1, $headers[$i]);
+        }
+        for ($i = 0; $i < count($array); $i++) {
+            for ($j = 0; $j < count($letters); $j++) {
+                $worksheet->setCellValue($letters[$j] . ($i + 2), $array[$i][$j]);
+            }
+        }
+        $writer = new Xlsx($spreadsheet);
+        $writer->save($filename);
+        return view('download', ['filename' => $filename]);
     }
 }

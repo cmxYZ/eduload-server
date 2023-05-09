@@ -13,6 +13,8 @@ Route::get('/changestake', [UserController::class, 'change_stake'])->name('chang
 Route::get('/changeishour', [UserController::class, 'change_ishour'])->name('change_ishour');
 Route::get('/changerealhours', [UserController::class, 'change_realhours'])->name('change_realhours');
 
+Route::get('/loadexcel', [UserController::class, 'load_excel'])->name('load_excel');
+Route::get('/loadexcelbytkey', [UserController::class, 'load_excel_by_tkey'])->name('load_excel_by_tkey');
 
 
 Route::get('/checkuser', [UserController::class, 'check_user'])->name('check_user');

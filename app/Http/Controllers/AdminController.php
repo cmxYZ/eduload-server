@@ -30,15 +30,6 @@ class AdminController extends Controller
             }
             //PhysFace1C
 
-            //Stakes
-            $year = $this->setYear();
-            $sql = DB::select("SELECT `id` FROM `Stakes` WHERE `year` = '$year' AND `tkey` = '$value->tkey'");
-            if (empty($sql))
-            {
-                DB::insert("INSERT INTO `Stakes` (`stake`, `year`, `tkey`) VALUES ('$value->stake', '$year', '$value->tkey')");
-            }
-            //Stakes
-
             //Teachers
             $InfoWorkPlaces = "$value->post: $value->stake ($value->workPlace)";
 
@@ -60,7 +51,25 @@ class AdminController extends Controller
             }
             //Teachers
         }
+        $this->update_stakes();
         $this->update_json();
+    }
+
+    public function update_stakes()
+    {
+        $years = DB::select("SELECT `year` FROM `Years`");
+        $teachers = DB::select("SELECT `tkey`, `stake` FROM `Teachers`");
+
+        foreach ($years as $year_row)
+        {
+            foreach ($teachers as $teacher_row) {
+                $sql = DB::select("SELECT `id` FROM `Stakes` WHERE `year` = '$year_row->year' AND `tkey` = '$teacher_row->tkey'");
+                if (empty($sql)) {
+                    DB::insert("INSERT INTO `Stakes` (`stake`, `year`, `tkey`) VALUES ('$teacher_row->stake', '$year_row->year', '$teacher_row->tkey')");
+                }
+            }
+        }
+
     }
 
     public function update_loads()
@@ -69,9 +78,9 @@ class AdminController extends Controller
         $get_tkey = request()->get('tkey');
         $result = '';
         if ($get_year == null || $get_year == '') {
-            $get_year = '2022';
+            $result = $this->load_from_api("http://runp.dit.urfu.ru:8990/api/loads");
         }
-        if ($get_tkey == null || $get_tkey == '') {
+        else if ($get_tkey == null || $get_tkey == '') {
             $result = $this->load_from_api("http://runp.dit.urfu.ru:8990/api/loads?year=$get_year");
         }
         else
@@ -82,6 +91,7 @@ class AdminController extends Controller
 
         foreach ($result as $value) {
             $year = $value->year;
+            DB::insert("INSERT IGNORE INTO `Years` (`year`) VALUES ('$year')");
             $semester = $value->semester;
             foreach ($value->teachers as $teacher) {
                 $guidPerson1C = $teacher->guidPerson1C;
@@ -145,39 +155,45 @@ class AdminController extends Controller
         if (file_exists('data.json')) {
             unlink('data.json');
         }
-        $year = "2022";
+        $years = DB::select("SELECT `year` FROM `Years`");
         $data = array();
         $result = DB::select("SELECT * FROM `Teachers`");
         $allowedDivisions = $this->get_allowed_divisions();
 
-        foreach ($result as $row)
-        {
-            $tkey = $row->tkey;
-            $name = $row->lastName . ' ' .  $row->firstName . ' ' . $row->patronymic;
-            $infoWorkPlaces = $row->infoWorkPlaces;
-            $stake = $row->stake == '' ? '-' : $row->stake;
+        foreach ($years as $year_row) {
+            $year = $year_row->year;
+            foreach ($result as $row) {
+                $tkey = $row->tkey;
+                $name = $row->lastName . ' ' . $row->firstName . ' ' . $row->patronymic;
+                $infoWorkPlaces = $row->infoWorkPlaces;
 
-            $b = $this->SummHours("SELECT plannedHours, realHours, readingDivisionuuid FROM `Loads`
+                $stake = DB::select("SELECT `stake` FROM `Stakes` WHERE `tkey` = '$tkey' AND `year` = '$year'")[0]->stake;
+                if ($stake == null || $stake == '') {
+                    $stake = '-';
+                }
+
+                $b = $this->SummHours("SELECT plannedHours, realHours, readingDivisionuuid FROM `Loads`
                                                     WHERE tkey='$tkey' AND compensationType='бюджет' AND year='$year'", $allowedDivisions);
-            $c = $this->SummHours("SELECT plannedHours, realHours, readingDivisionuuid FROM `Loads`
+                $c = $this->SummHours("SELECT plannedHours, realHours, readingDivisionuuid FROM `Loads`
                                                     WHERE tkey='$tkey' AND compensationType='контракт' AND year='$year'", $allowedDivisions);
-            $a = $this->SummHours("SELECT plannedHours, realHours, readingDivisionuuid FROM `Loads`
+                $a = $this->SummHours("SELECT plannedHours, realHours, readingDivisionuuid FROM `Loads`
                                                     WHERE tkey='$tkey' AND year='$year'", $allowedDivisions);
-            $h = DB::select("SELECT hours FROM PhysFace1C WHERE guidPerson1C='$row->guidPerson1C'");
-            $hoursOnStake = 0;
+                $h = DB::select("SELECT hours FROM PhysFace1C WHERE guidPerson1C='$row->guidPerson1C'");
+                $hoursOnStake = 0;
 
-            if (!empty($h))
-                $hoursOnStake = (float)$h[0]->hours;
+                if (!empty($h))
+                    $hoursOnStake = (float)$h[0]->hours;
 
-            $hours = $b[0] - $hoursOnStake;
+                $hours = $b[0] - $hoursOnStake;
 
-            $line = ["tkey" => "$tkey", "name" => "$name", "infoWorkPlaces" => "$infoWorkPlaces", "stake" => $stake,
-                "hoursOnStake" => $hoursOnStake, "hours" => $hours,
-                "bHoursPlaned" => $b[0], "bHoursReal" => $b[1], "bHoursDiff" => $b[2],
-                "cHoursPlaned" => $c[0], "cHoursReal" => $c[1], "cHoursDiff" => $c[2],
-                "hoursPlaned" => $a[0], "hoursReal" => $a[1], "hoursDiff" => $a[2],
-                "year" => $year, "guidPerson1C" => $row->guidPerson1C];
-            array_push($data, $line);
+                $line = ["tkey" => "$tkey", "name" => "$name", "infoWorkPlaces" => "$infoWorkPlaces", "stake" => $stake,
+                    "hoursOnStake" => $hoursOnStake, "hours" => $hours,
+                    "bHoursPlaned" => $b[0], "bHoursReal" => $b[1], "bHoursDiff" => $b[2],
+                    "cHoursPlaned" => $c[0], "cHoursReal" => $c[1], "cHoursDiff" => $c[2],
+                    "hoursPlaned" => $a[0], "hoursReal" => $a[1], "hoursDiff" => $a[2],
+                    "year" => $year, "guidPerson1C" => $row->guidPerson1C];
+                array_push($data, $line);
+            }
         }
         $json = json_encode($data, JSON_UNESCAPED_UNICODE);
         file_put_contents('data.json', $json);
