@@ -135,6 +135,8 @@ class UserController extends Controller
     }
 
     public function load_excel() {
+        $spreadsheet = new Spreadsheet();
+        $worksheet = $spreadsheet->getActiveSheet();
         $letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O'];
         $headers = [
             'ФИО',
@@ -153,16 +155,32 @@ class UserController extends Controller
             'Разница (Общее)',
             'Год'
         ];
+        for ($i = 0; $i < count($letters); $i++) {
+            $worksheet->setCellValue($letters[$i] . 1, $headers[$i]);
+        }
         $json = $this->load_data();
         $array = json_decode($json);
-//        $array = [
-//            ['поле 1', 'поле 1', 'поле 1', 'поле 1', 'поле 1', 'поле 1', 'поле 1', 'поле 1', 'поле 1', 'поле 1', 'поле 1', 'поле 1', 'поле 1', 'поле 1', 'поле 1', 'поле 1'],
-//            ['поле 2', 'поле 2', 'поле 2', 'поле 2', 'поле 2', 'поле 2', 'поле 2', 'поле 2', 'поле 2', 'поле 2', 'поле 2', 'поле 2', 'поле 2', 'поле 2', 'поле 2', 'поле 2'],
-//            ['поле 3', 'поле 3', 'поле 3', 'поле 3', 'поле 3', 'поле 3', 'поле 3', 'поле 3', 'поле 3', 'поле 3', 'поле 3', 'поле 3', 'поле 3', 'поле 3', 'поле 3', 'поле 3']
-//        ];
         $filename = 'Отчет 1.xlsx';
-        dd($array);
-        return $this->download_file('Отчет 1.xlsx', $letters, $array, $headers);
+
+        for ($i = 0; $i < count($array); $i++) {
+            $worksheet->setCellValue($letters[0] . ($i + 2), $array[$i]->name);
+            $worksheet->setCellValue($letters[1] . ($i + 2), $array[$i]->infoWorkPlaces);
+            $worksheet->setCellValue($letters[2] . ($i + 2), $array[$i]->stake);
+            $worksheet->setCellValue($letters[3] . ($i + 2), $array[$i]->hoursOnStake);
+            $worksheet->setCellValue($letters[4] . ($i + 2), $array[$i]->hours);
+            $worksheet->setCellValue($letters[5] . ($i + 2), $array[$i]->bHoursPlaned);
+            $worksheet->setCellValue($letters[6] . ($i + 2), $array[$i]->bHoursReal);
+            $worksheet->setCellValue($letters[7] . ($i + 2), $array[$i]->bHoursDiff);
+            $worksheet->setCellValue($letters[8] . ($i + 2), $array[$i]->cHoursPlaned);
+            $worksheet->setCellValue($letters[9] . ($i + 2), $array[$i]->cHoursReal);
+            $worksheet->setCellValue($letters[10] . ($i + 2), $array[$i]->cHoursDiff);
+            $worksheet->setCellValue($letters[11] . ($i + 2), $array[$i]->hoursPlaned);
+            $worksheet->setCellValue($letters[12] . ($i + 2), $array[$i]->hoursReal);
+            $worksheet->setCellValue($letters[13] . ($i + 2), $array[$i]->hoursDiff);
+            $worksheet->setCellValue($letters[14] . ($i + 2), $array[$i]->year);
+        }
+
+        return $this->download_file('Отчет 1.xlsx', $spreadsheet);
     }
 
     public function load_excel_by_tkey() {
@@ -193,17 +211,7 @@ class UserController extends Controller
         return $this->download_file($filename, $letters, $array, $headers);
     }
 
-    public function download_file($filename, $letters, $array, $headers) {
-        $spreadsheet = new Spreadsheet();
-        $worksheet = $spreadsheet->getActiveSheet();
-        for ($i = 0; $i < count($letters); $i++) {
-            $worksheet->setCellValue($letters[$i] . 1, $headers[$i]);
-        }
-        for ($i = 0; $i < count($array); $i++) {
-            for ($j = 0; $j < count($letters); $j++) {
-                $worksheet->setCellValue($letters[$j] . ($i + 2), $array[$i][$j]);
-            }
-        }
+    public function download_file($filename, $spreadsheet) {
         $writer = new Xlsx($spreadsheet);
         $writer->save($filename);
         return view('download', ['filename' => $filename]);
