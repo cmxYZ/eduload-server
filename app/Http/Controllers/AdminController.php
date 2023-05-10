@@ -122,7 +122,7 @@ class AdminController extends Controller
                 }
             }
         }
-        $this->update_json();
+        //$this->update_json();
     }
 
     public function load_from_api($url)
