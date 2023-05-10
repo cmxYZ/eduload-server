@@ -80,7 +80,7 @@ class AdminController extends Controller
         if ($get_year == null || $get_year == '') {
             $year = 2022;
         }
-        else if ($get_tkey == null || $get_tkey == '') {
+        if ($get_tkey == null || $get_tkey == '') {
             $result = $this->load_from_api("http://runp.dit.urfu.ru:8990/api/loads?year=$get_year");
         }
         else
