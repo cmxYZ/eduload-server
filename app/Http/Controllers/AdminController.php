@@ -88,7 +88,6 @@ class AdminController extends Controller
             $result = $this->load_from_api("http://runp.dit.urfu.ru:8990/api/loads?year=$get_year&tkey=$get_tkey");
         }
 
-        dd($result);
 
         foreach ($result as $value) {
             $year = $value->year;
