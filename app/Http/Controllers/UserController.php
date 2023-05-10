@@ -205,8 +205,8 @@ class UserController extends Controller
         $array = json_decode($json);
 
         $name = DB::select("SELECT `lastName`, `firstName`, `patronymic` FROM `Teachers` WHERE `tkey` = '$tkey'");
-        $filename = 'Нагрузка преподавателя ' . $name->lastName . ' ' . $name->firstName
-            . ' ' . $name->patronymic . ' ' . $year . '.xlsx';
+        $filename = 'Нагрузка преподавателя ' . $name[0]->lastName . ' ' . $name[0]->firstName
+            . ' ' . $name[0]->patronymic . ' ' . $year . '.xlsx';
 
         return $this->download_file($filename, $letters, $array, $headers);
     }
