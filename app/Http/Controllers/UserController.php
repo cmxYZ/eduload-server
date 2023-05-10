@@ -211,8 +211,6 @@ class UserController extends Controller
         $filename = 'Нагрузка преподавателя ' . $name[0]->lastName . ' ' . $name[0]->firstName
             . ' ' . $name[0]->patronymic . ' ' . $year . '.xlsx';
 
-        dd($filename);
-
         for ($i = 0; $i < count($array); $i++) {
             $worksheet->setCellValue($letters[0] . ($i + 2), $array[$i]->disciplineName);
             $worksheet->setCellValue($letters[1] . ($i + 2), $array[$i]->groupsHistory);
