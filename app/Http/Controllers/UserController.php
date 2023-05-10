@@ -180,10 +180,12 @@ class UserController extends Controller
             $worksheet->setCellValue($letters[14] . ($i + 2), $array[$i]->year);
         }
 
-        return $this->download_file('Отчет 1.xlsx', $spreadsheet);
+        return $this->download_file($filename, $spreadsheet);
     }
 
     public function load_excel_by_tkey() {
+        $spreadsheet = new Spreadsheet();
+        $worksheet = $spreadsheet->getActiveSheet();
         $letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K'];
         $headers = [
             'Дисциплина',
@@ -198,17 +200,33 @@ class UserController extends Controller
             'Разница',
             'Почасовая оплата',
         ];
-
+        for ($i = 0; $i < count($letters); $i++) {
+            $worksheet->setCellValue($letters[$i] . 1, $headers[$i]);
+        }
         $tkey = $_GET['tkey'];
         $year = $_GET['year'];
         $json = $this->get_data_by_tkey($tkey, $year);
         $array = json_decode($json);
-
         $name = DB::select("SELECT `lastName`, `firstName`, `patronymic` FROM `Teachers` WHERE `tkey` = '$tkey'");
         $filename = 'Нагрузка преподавателя ' . $name[0]->lastName . ' ' . $name[0]->firstName
             . ' ' . $name[0]->patronymic . ' ' . $year . '.xlsx';
 
-        return $this->download_file($filename, $letters, $array, $headers);
+        for ($i = 0; $i < count($array); $i++) {
+            $worksheet->setCellValue($letters[0] . ($i + 2), $array[$i]->disciplineName);
+            $worksheet->setCellValue($letters[1] . ($i + 2), $array[$i]->groupsHistory);
+            $worksheet->setCellValue($letters[2] . ($i + 2), $array[$i]->semester);
+            $worksheet->setCellValue($letters[3] . ($i + 2), $array[$i]->loadType);
+            $worksheet->setCellValue($letters[4] . ($i + 2), $array[$i]->formingDivisionuuid);
+            $worksheet->setCellValue($letters[5] . ($i + 2), $array[$i]->readingDivisionuuid);
+            $worksheet->setCellValue($letters[6] . ($i + 2), $array[$i]->compensationType);
+            $worksheet->setCellValue($letters[7] . ($i + 2), $array[$i]->plannedHours);
+            $worksheet->setCellValue($letters[8] . ($i + 2), $array[$i]->realHours);
+            $worksheet->setCellValue($letters[9] . ($i + 2), $array[$i]->diff);
+            $worksheet->setCellValue($letters[10] . ($i + 2), $array[$i]->isHour);
+        }
+
+
+        return $this->download_file($filename, $spreadsheet);
     }
 
     public function download_file($filename, $spreadsheet) {
