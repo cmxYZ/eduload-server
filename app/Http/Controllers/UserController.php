@@ -37,10 +37,6 @@ class UserController extends Controller
     }
 
     public function load_data_by_tkey() {
-        if (!isset($_GET['tkey']) && !isset($_GET['year']))
-        {
-            return 'No Data';
-        }
         $tkey = $_GET['tkey'];
         $year = $_GET['year'];
         return get_data_by_tkey($tkey, $year);
