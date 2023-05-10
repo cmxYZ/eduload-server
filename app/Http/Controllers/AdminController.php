@@ -110,6 +110,9 @@ class AdminController extends Controller
                     $loadType = $load->loadType;
                     $plannedHours = $load->plannedHours;
                     $realHours = $load->realHours;
+                    if ($tkey == '99a039c4931441fdbb5df9be42bca5f4') {
+                        dd($load);
+                    }
 
                     DB::insert("INSERT INTO `Loads` (`guidPerson1C`, `formingDivisionuuid`, `readingDivisionuuid`, `groupsHistory`,
                 `disciplineName`, `compensationType`, `loadType`, `plannedHours`, `realHours`, `semester`, `year`, `tkey`)
