@@ -167,9 +167,11 @@ class AdminController extends Controller
                 $name = $row->lastName . ' ' . $row->firstName . ' ' . $row->patronymic;
                 $infoWorkPlaces = $row->infoWorkPlaces;
 
-                $stake = DB::select("SELECT `stake` FROM `Stakes` WHERE `tkey` = '$tkey' AND `year` = '$year'")[0]->stake;
-                if ($stake == null || $stake == '') {
-                    $stake = '-';
+                $stake = '-';
+                $sql = DB::select("SELECT `stake` FROM `Stakes` WHERE `tkey` = '$tkey' AND `year` = '$year'");
+                if (!empty($sql))
+                {
+                    $stake = $sql[0]->stake;
                 }
 
                 $b = $this->SummHours("SELECT plannedHours, realHours, readingDivisionuuid FROM `Loads`
