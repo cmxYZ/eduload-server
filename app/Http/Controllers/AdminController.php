@@ -111,7 +111,7 @@ class AdminController extends Controller
                     $plannedHours = $load->plannedHours;
                     $realHours = $load->realHours;
                     if ($tkey == '99a039c4931441fdbb5df9be42bca5f4') {
-                        dd($load);
+                        var_dump($load);
                     }
 
                     DB::insert("INSERT INTO `Loads` (`guidPerson1C`, `formingDivisionuuid`, `readingDivisionuuid`, `groupsHistory`,
