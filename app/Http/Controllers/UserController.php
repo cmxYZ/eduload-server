@@ -161,6 +161,7 @@ class UserController extends Controller
 //            ['поле 3', 'поле 3', 'поле 3', 'поле 3', 'поле 3', 'поле 3', 'поле 3', 'поле 3', 'поле 3', 'поле 3', 'поле 3', 'поле 3', 'поле 3', 'поле 3', 'поле 3', 'поле 3']
 //        ];
         $filename = 'Отчет 1.xlsx';
+        dd($array);
         return $this->download_file('Отчет 1.xlsx', $letters, $array, $headers);
     }
 
