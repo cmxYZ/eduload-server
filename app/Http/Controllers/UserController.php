@@ -180,7 +180,9 @@ class UserController extends Controller
             $worksheet->setCellValue($letters[14] . ($i + 2), $array[$i]->year);
         }
 
-        return $this->download_file($filename, $spreadsheet);
+        $writer = new Xlsx($spreadsheet);
+        $writer->save($filename);
+        return view('download', ['filename' => $filename]);
     }
 
     public function load_excel_by_tkey() {
@@ -225,10 +227,6 @@ class UserController extends Controller
             $worksheet->setCellValue($letters[10] . ($i + 2), $array[$i]->isHour);
         }
 
-        return $this->download_file($filename, $spreadsheet);
-    }
-
-    public function download_file($filename, $spreadsheet) {
         $writer = new Xlsx($spreadsheet);
         $writer->save($filename);
         return view('download', ['filename' => $filename]);
