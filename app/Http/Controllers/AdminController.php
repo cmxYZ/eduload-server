@@ -78,7 +78,7 @@ class AdminController extends Controller
         $get_tkey = request()->get('tkey');
         $result = '';
         if ($get_year == null || $get_year == '') {
-            $year = 2022;
+            $get_year = $this->setYear();
         }
         if ($get_tkey == null || $get_tkey == '') {
             $result = $this->load_from_api("http://runp.dit.urfu.ru:8990/api/loads?year=$get_year");
