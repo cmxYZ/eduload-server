@@ -132,7 +132,7 @@ class AdminController extends Controller
 
     public function update_teacher_in_json($year, $tkey)
     {
-        if (!file_exists("$year.json")) return "No Year Data Found";
+        if (!file_exists("$year.json")) return $this->update_year_json($year);;
 
         $json = file_get_contents("$year.json");
         $data = json_decode($json);
