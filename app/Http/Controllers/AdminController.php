@@ -68,7 +68,7 @@ class AdminController extends Controller
                 }
             }
         }
-        return 'Success';
+        return $this->update_json();
     }
 
     public function update_loads()
@@ -159,9 +159,6 @@ class AdminController extends Controller
 
     public function update_year_json($year)
     {
-        if (file_exists("$year.json")) {
-            unlink("$year.json");
-        }
         $data = array();
         $result = DB::select("SELECT tkey FROM `Teachers`");
         $allowedDivisions = $this->get_allowed_divisions();
@@ -185,6 +182,9 @@ class AdminController extends Controller
             $data += $line;
         }
         $json = json_encode($data, JSON_UNESCAPED_UNICODE);
+        if (file_exists("$year.json")) {
+            unlink("$year.json");
+        }
         file_put_contents("$year.json", $json);
         return $this->update_json();
     }
