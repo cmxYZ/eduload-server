@@ -111,7 +111,7 @@ class AdminController extends Controller
                     //tkey, GroupsHistory, DisciplineName, LoadType, Semester, Year
 
                     $sql = DB::select("SELECT id FROM `Loads` WHERE `disciplineName` = '$disciplineName' AND `loadType` = '$loadType'
-                    AND `semester` = '$semester' AND `year` = '$year' AND `tkey` = '$tkey'");
+                    AND `semester` = '$semester' AND `year` = '$year' AND `tkey` = '$tkey' AND `groupsHistory` = '$groupsHistory'");
 
                     if (empty($sql)) {
                         DB::insert("INSERT INTO `Loads` (`guidPerson1C`, `formingDivisionuuid`, `readingDivisionuuid`, `groupsHistory`,
