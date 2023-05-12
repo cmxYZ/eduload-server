@@ -51,7 +51,7 @@ class AdminController extends Controller
             }
             //Teachers
         }
-        $this->update_stakes();
+        return $this->update_stakes();
     }
 
     public function update_stakes()
@@ -68,7 +68,7 @@ class AdminController extends Controller
                 }
             }
         }
-
+        return 'Success';
     }
 
     public function update_loads()
@@ -237,6 +237,9 @@ class AdminController extends Controller
             }
         }
         $json = json_encode($data, JSON_UNESCAPED_UNICODE);
+        if (file_exists("data.json")) {
+            unlink("data.json");
+        }
         file_put_contents('data.json', $json);
         return 'Success';
     }
