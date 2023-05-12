@@ -123,31 +123,6 @@ class AdminController extends Controller
         return $this->update_year_json($get_year);
     }
 
-    public function load_from_api($url)
-    {
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_USERPWD, "iritrtf:SHi&7zTrpEf&A");
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_HEADER, false);
-        $request = curl_exec($ch);
-        curl_close($ch);
-        if (!$request) die('Error: API connection failed!');
-
-        return json_decode($request);
-    }
-
-    public function setYear() : int
-    {
-        $year = '';
-        if ((int)date('n') >= 9) {
-            $year = (int)date('o');
-        } else {
-            $year = (int)date('o') - 1;
-        }
-        return $year;
-    }
-
     public function update_year_json($year)
     {
         if (file_exists("$year.json")) {
@@ -178,6 +153,31 @@ class AdminController extends Controller
         $json = json_encode($data, JSON_UNESCAPED_UNICODE);
         file_put_contents("$year.json", $json);
         return 'Success';
+    }
+
+    public function load_from_api($url)
+    {
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_USERPWD, "iritrtf:SHi&7zTrpEf&A");
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_HEADER, false);
+        $request = curl_exec($ch);
+        curl_close($ch);
+        if (!$request) die('Error: API connection failed!');
+
+        return json_decode($request);
+    }
+
+    public function setYear() : int
+    {
+        $year = '';
+        if ((int)date('n') >= 9) {
+            $year = (int)date('o');
+        } else {
+            $year = (int)date('o') - 1;
+        }
+        return $year;
     }
 
     public function SummHours($sql, $allowedDivisions)

@@ -21,6 +21,7 @@ class UserController extends Controller
             if (file_exists("$year.json")) {
                 $json = file_get_contents("$year.json");
                 $current_year_loads = json_decode($json);
+                dd($current_year_loads);
                 foreach ($teachers as $teacher) {
                     $tkey = $teacher->tkey;
                     $name = $teacher->lastName . ' ' . $teacher->firstName . ' ' . $teacher->patronymic;
