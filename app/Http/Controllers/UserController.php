@@ -12,54 +12,10 @@ class UserController extends Controller
 {
     public function load_data()
     {
-        $years = DB::select("SELECT `year` FROM `Years`");
-        $data = array();
-        $teachers = DB::select("SELECT * FROM `Teachers`");
-
-        foreach ($years as $year_row) {
-            $year = $year_row->year;
-            if (file_exists("$year.json")) {
-                $json = file_get_contents("$year.json");
-                $current_year_loads = json_decode($json);
-                foreach ($teachers as $teacher) {
-                    $tkey = $teacher->tkey;
-                    $name = $teacher->lastName . ' ' . $teacher->firstName . ' ' . $teacher->patronymic;
-                    $infoWorkPlaces = $teacher->infoWorkPlaces;
-
-                    $stake = '-';
-                    $sql = DB::select("SELECT `stake` FROM `Stakes` WHERE `tkey` = '$tkey' AND `year` = '$year'");
-                    if (!empty($sql))
-                    {
-                        $stake = $sql[0]->stake;
-                    }
-
-                    $h = DB::select("SELECT hours FROM PhysFace1C WHERE guidPerson1C='$teacher->guidPerson1C'");
-                    $hoursOnStake = 0;
-
-                    if (!empty($h))
-                        $hoursOnStake = (float)$h[0]->hours;
-
-                    $hours = $current_year_loads->$tkey->bHoursPlaned - $hoursOnStake;
-
-                    $line = ["tkey" => "$tkey", "name" => "$name", "infoWorkPlaces" => "$infoWorkPlaces", "stake" => $stake,
-                        "hoursOnStake" => $hoursOnStake, "hours" => $hours,
-                        "bHoursPlaned" => $current_year_loads->$tkey->bHoursPlaned,
-                        "bHoursReal" => $current_year_loads->$tkey->bHoursReal,
-                        "bHoursDiff" => $current_year_loads->$tkey->bHoursDiff,
-                        "cHoursPlaned" => $current_year_loads->$tkey->cHoursPlaned,
-                        "cHoursReal" => $current_year_loads->$tkey->cHoursReal,
-                        "cHoursDiff" => $current_year_loads->$tkey->cHoursDiff,
-                        "hoursPlaned" => $current_year_loads->$tkey->hoursPlaned,
-                        "hoursReal" => $current_year_loads->$tkey->hoursReal,
-                        "hoursDiff" => $current_year_loads->$tkey->hoursDiff,
-                        "year" => $year,
-                        "guidPerson1C" => $teacher->guidPerson1C];
-                    array_push($data, $line);
-                }
-            }
+        if (file_exists("data.json")) {
+            return file_get_contents('data.json');
         }
-        $json = json_encode($data, JSON_UNESCAPED_UNICODE);
-        return $json;
+        return 'No Data';
     }
 
     public function check_user()
