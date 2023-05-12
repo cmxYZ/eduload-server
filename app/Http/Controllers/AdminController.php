@@ -154,7 +154,7 @@ class AdminController extends Controller
         $json = json_encode($data, JSON_UNESCAPED_UNICODE);
         unlink("$year.json");
         file_put_contents("$year.json", $json);
-        return $this->update_json();
+        return $this->update_stakes();
     }
 
     public function update_year_json($year)
@@ -186,7 +186,7 @@ class AdminController extends Controller
             unlink("$year.json");
         }
         file_put_contents("$year.json", $json);
-        return $this->update_json();
+        return $this->update_stakes();
     }
 
     public function update_json() {
