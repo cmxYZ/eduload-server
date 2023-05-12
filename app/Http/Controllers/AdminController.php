@@ -52,7 +52,6 @@ class AdminController extends Controller
             //Teachers
         }
         $this->update_stakes();
-        $this->update_json();
     }
 
     public function update_stakes()
@@ -74,12 +73,15 @@ class AdminController extends Controller
 
     public function update_loads()
     {
+        if (!isset($_GET['year'])) { return 'Data Error: Year is required'; }
+
         $get_year = request()->get('year');
-        $get_tkey = request()->get('tkey');
-        $result = '';
         if ($get_year == null || $get_year == '') {
             $get_year = $this->setYear();
         }
+
+        $get_tkey = request()->get('tkey');
+        $result = '';
         if ($get_tkey == null || $get_tkey == '') {
             $result = $this->load_from_api("http://runp.dit.urfu.ru:8990/api/loads?year=$get_year");
         }
@@ -88,17 +90,14 @@ class AdminController extends Controller
             $result = $this->load_from_api("http://runp.dit.urfu.ru:8990/api/loads?year=$get_year&tkey=$get_tkey");
         }
 
-
         foreach ($result as $value) {
             $year = $value->year;
             DB::insert("INSERT IGNORE INTO `Years` (`year`) VALUES ('$year')");
             $semester = $value->semester;
             foreach ($value->teachers as $teacher) {
                 $guidPerson1C = $teacher->guidPerson1C;
-                $samAccountName = $teacher->samAccountName;
                 $tkey = $teacher->tkey;
-                DB::delete("DELETE FROM `Loads` WHERE `year` = '$year' AND `semester` = '$semester'
-                      AND `guidPerson1C` = '$guidPerson1C' AND `tkey` = '$tkey'");
+                DB::delete("DELETE FROM `Loads` WHERE `year` = '$year' AND `semester` = '$semester' AND `tkey` = '$tkey'");
                 foreach ($teacher->loads as $load) {
                     $formingDivisionuuid = $load->formingDivision->uuid;
                     $readingDivisionuuid = $load->readingDivision->uuid;
@@ -118,11 +117,10 @@ class AdminController extends Controller
 
                     DB::insert("INSERT IGNORE INTO `Divisions` (`uuid`, `name`) VALUES ('$formingDivisionuuid', '$formingDivisionname')");
                     DB::insert("INSERT IGNORE INTO `Divisions` (`uuid`, `name`) VALUES ('$readingDivisionuuid', '$readingDivisionname')");
-
                 }
             }
         }
-        $this->update_json();
+        return $this->update_year_json($get_year);
     }
 
     public function load_from_api($url)
@@ -150,55 +148,36 @@ class AdminController extends Controller
         return $year;
     }
 
-    public function update_json()
+    public function update_year_json($year)
     {
-        if (file_exists('data.json')) {
-            unlink('data.json');
+        if (file_exists("$year.json")) {
+            unlink("$year.json");
         }
-        $years = DB::select("SELECT `year` FROM `Years`");
         $data = array();
-        $result = DB::select("SELECT * FROM `Teachers`");
+        $result = DB::select("SELECT tkey FROM `Teachers`");
         $allowedDivisions = $this->get_allowed_divisions();
 
-        foreach ($years as $year_row) {
-            $year = $year_row->year;
-            foreach ($result as $row) {
-                $tkey = $row->tkey;
-                $name = $row->lastName . ' ' . $row->firstName . ' ' . $row->patronymic;
-                $infoWorkPlaces = $row->infoWorkPlaces;
+        foreach ($result as $row) {
+            $tkey = $row->tkey;
 
-                $stake = '-';
-                $sql = DB::select("SELECT `stake` FROM `Stakes` WHERE `tkey` = '$tkey' AND `year` = '$year'");
-                if (!empty($sql))
-                {
-                    $stake = $sql[0]->stake;
-                }
-
-                $b = $this->SummHours("SELECT plannedHours, realHours, readingDivisionuuid FROM `Loads`
+            $b = $this->SummHours("SELECT plannedHours, realHours, readingDivisionuuid FROM `Loads`
                                                     WHERE tkey='$tkey' AND compensationType='бюджет' AND year='$year'", $allowedDivisions);
-                $c = $this->SummHours("SELECT plannedHours, realHours, readingDivisionuuid FROM `Loads`
+            $c = $this->SummHours("SELECT plannedHours, realHours, readingDivisionuuid FROM `Loads`
                                                     WHERE tkey='$tkey' AND compensationType='контракт' AND year='$year'", $allowedDivisions);
-                $a = $this->SummHours("SELECT plannedHours, realHours, readingDivisionuuid FROM `Loads`
+            $a = $this->SummHours("SELECT plannedHours, realHours, readingDivisionuuid FROM `Loads`
                                                     WHERE tkey='$tkey' AND year='$year'", $allowedDivisions);
-                $h = DB::select("SELECT hours FROM PhysFace1C WHERE guidPerson1C='$row->guidPerson1C'");
-                $hoursOnStake = 0;
 
-                if (!empty($h))
-                    $hoursOnStake = (float)$h[0]->hours;
-
-                $hours = $b[0] - $hoursOnStake;
-
-                $line = ["tkey" => "$tkey", "name" => "$name", "infoWorkPlaces" => "$infoWorkPlaces", "stake" => $stake,
-                    "hoursOnStake" => $hoursOnStake, "hours" => $hours,
-                    "bHoursPlaned" => $b[0], "bHoursReal" => $b[1], "bHoursDiff" => $b[2],
-                    "cHoursPlaned" => $c[0], "cHoursReal" => $c[1], "cHoursDiff" => $c[2],
-                    "hoursPlaned" => $a[0], "hoursReal" => $a[1], "hoursDiff" => $a[2],
-                    "year" => $year, "guidPerson1C" => $row->guidPerson1C];
-                array_push($data, $line);
-            }
+            $line = [ $tkey => [
+                "bHoursPlaned" => $b[0], "bHoursReal" => $b[1], "bHoursDiff" => $b[2],
+                "cHoursPlaned" => $c[0], "cHoursReal" => $c[1], "cHoursDiff" => $c[2],
+                "hoursPlaned" => $a[0], "hoursReal" => $a[1], "hoursDiff" => $a[2]
+            ]
+            ];
+            $data += $line;
         }
         $json = json_encode($data, JSON_UNESCAPED_UNICODE);
-        file_put_contents('data.json', $json);
+        file_put_contents("$year.json", $json);
+        return 'Success';
     }
 
     public function SummHours($sql, $allowedDivisions)
