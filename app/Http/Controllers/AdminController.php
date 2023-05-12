@@ -73,7 +73,9 @@ class AdminController extends Controller
 
     public function update_loads()
     {
-        if (!isset($_GET['year'])) { return 'Data Error: Year is required'; }
+        if (!isset($_GET['year'])) {
+            return 'Data Error: Year is required';
+        }
 
         $get_year = request()->get('year');
         if ($get_year == null || $get_year == '') {
@@ -84,9 +86,7 @@ class AdminController extends Controller
         $result = '';
         if ($get_tkey == null || $get_tkey == '') {
             $result = $this->load_from_api("http://runp.dit.urfu.ru:8990/api/loads?year=$get_year");
-        }
-        else
-        {
+        } else {
             $result = $this->load_from_api("http://runp.dit.urfu.ru:8990/api/loads?year=$get_year&tkey=$get_tkey");
         }
 
@@ -108,19 +108,33 @@ class AdminController extends Controller
                     $loadType = $load->loadType;
                     $plannedHours = $load->plannedHours;
                     $realHours = $load->realHours;
+                    //tkey, GroupsHistory, DisciplineName, LoadType, Semester, Year
 
-                    DB::delete("DELETE FROM `Loads` WHERE `formingDivisionuuid` = '$formingDivisionuuid'
-                      AND `readingDivisionuuid` = '$readingDivisionuuid' AND `disciplineName` = '$disciplineName'
-                      AND `compensationType` = '$compensationType' AND `loadType` = '$loadType'
-                      AND `guidPerson1C` = '$guidPerson1C' AND `semester` = '$semester' AND `year` = '$year' AND `tkey` = '$tkey'");
+                    $sql = DB::select("SELECT id FROM `Loads` WHERE `disciplineName` = '$disciplineName' AND `loadType` = '$loadType'
+                    AND `semester` = '$semester' AND `year` = '$year' AND `tkey` = '$tkey'");
 
-                    DB::insert("INSERT INTO `Loads` (`guidPerson1C`, `formingDivisionuuid`, `readingDivisionuuid`, `groupsHistory`,
+                    if (empty($sql)) {
+                        DB::insert("INSERT INTO `Loads` (`guidPerson1C`, `formingDivisionuuid`, `readingDivisionuuid`, `groupsHistory`,
                 `disciplineName`, `compensationType`, `loadType`, `plannedHours`, `realHours`, `semester`, `year`, `tkey`)
                 VALUES ('$guidPerson1C', '$formingDivisionuuid', '$readingDivisionuuid', '$groupsHistory', '$disciplineName',
                 '$compensationType', '$loadType', '$plannedHours', '$realHours', '$semester', '$year', '$tkey')");
+                    } else {
+                        $id = $sql[0]->id;
 
+                        if ($compensationType == 'контракт')
+                        {
+                            DB::update("UPDATE `Loads` SET `plannedHours` = '$plannedHours', `realHours` = '$realHours',
+                   `guidPerson1C` = '$guidPerson1C', `formingDivisionuuid` = '$formingDivisionuuid', `readingDivisionuuid` = '$readingDivisionuuid' WHERE `id` = '$id'");
+                        }
+                        else
+                        {
+                            DB::update("UPDATE `Loads` SET `plannedHours` = '$plannedHours',
+                   `guidPerson1C` = '$guidPerson1C', `formingDivisionuuid` = '$formingDivisionuuid', `readingDivisionuuid` = '$readingDivisionuuid' WHERE `id` = '$id'");
+                        }
+                    }
                     DB::insert("INSERT IGNORE INTO `Divisions` (`uuid`, `name`) VALUES ('$formingDivisionuuid', '$formingDivisionname')");
                     DB::insert("INSERT IGNORE INTO `Divisions` (`uuid`, `name`) VALUES ('$readingDivisionuuid', '$readingDivisionname')");
+
                 }
             }
         }
