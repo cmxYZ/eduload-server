@@ -97,7 +97,6 @@ class AdminController extends Controller
             foreach ($value->teachers as $teacher) {
                 $guidPerson1C = $teacher->guidPerson1C;
                 $tkey = $teacher->tkey;
-                DB::delete("DELETE FROM `Loads` WHERE `year` = '$year' AND `semester` = '$semester' AND `tkey` = '$tkey'");
                 foreach ($teacher->loads as $load) {
                     $formingDivisionuuid = $load->formingDivision->uuid;
                     $readingDivisionuuid = $load->readingDivision->uuid;
@@ -109,6 +108,11 @@ class AdminController extends Controller
                     $loadType = $load->loadType;
                     $plannedHours = $load->plannedHours;
                     $realHours = $load->realHours;
+
+                    DB::delete("DELETE FROM `Loads` WHERE `formingDivisionuuid` = '$formingDivisionuuid'
+                      AND `readingDivisionuuid` = '$readingDivisionuuid' AND `disciplineName` = '$disciplineName'
+                      AND `compensationType` = '$compensationType' AND `loadType` = '$loadType'
+                      AND `guidPerson1C` = '$guidPerson1C' AND `semester` = '$semester' AND `year` = '$year' AND `tkey` = '$tkey'");
 
                     DB::insert("INSERT INTO `Loads` (`guidPerson1C`, `formingDivisionuuid`, `readingDivisionuuid`, `groupsHistory`,
                 `disciplineName`, `compensationType`, `loadType`, `plannedHours`, `realHours`, `semester`, `year`, `tkey`)
