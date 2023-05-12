@@ -21,7 +21,6 @@ class UserController extends Controller
             if (file_exists("$year.json")) {
                 $json = file_get_contents("$year.json");
                 $current_year_loads = json_decode($json);
-                dd($current_year_loads);
                 foreach ($teachers as $teacher) {
                     $tkey = $teacher->tkey;
                     $name = $teacher->lastName . ' ' . $teacher->firstName . ' ' . $teacher->patronymic;
@@ -40,7 +39,7 @@ class UserController extends Controller
                     if (!empty($h))
                         $hoursOnStake = (float)$h[0]->hours;
 
-                    $hours = $current_year_loads[$tkey]->bHoursPlaned - $hoursOnStake;
+                    $hours = $current_year_loads->$tkey->bHoursPlaned - $hoursOnStake;
 
                     $line = ["tkey" => "$tkey", "name" => "$name", "infoWorkPlaces" => "$infoWorkPlaces", "stake" => $stake,
                         "hoursOnStake" => $hoursOnStake, "hours" => $hours,
