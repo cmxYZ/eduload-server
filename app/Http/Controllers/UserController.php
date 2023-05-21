@@ -48,7 +48,7 @@ class UserController extends Controller
     public function get_data_by_tkey($tkey, $year) {
         $data = array();
         $result = DB::select("SELECT `id`, `disciplineName`, `groupsHistory`, `semester`, `loadType`, `formingDivisionuuid`, `readingDivisionuuid`,
-       `compensationType`, `plannedHours`, `realHours`, `isHour` FROM `Loads` WHERE `tkey` = '$tkey' AND `year` = '$year'");
+       `compensationType`, `plannedHours`, `realHours`, `isHour` FROM `Loads` WHERE `tkey` = '$tkey' AND `year` = '$year' AND deleted='0'");
 
         foreach ($result as $row)
         {

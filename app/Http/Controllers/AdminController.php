@@ -85,8 +85,10 @@ class AdminController extends Controller
         $get_tkey = request()->get('tkey');
         $result = '';
         if ($get_tkey == null || $get_tkey == '') {
+            DB::update("UPDATE `Loads` SET `deleted`='1' WHERE `year` = '$get_year'");
             $result = $this->load_from_api("http://runp.dit.urfu.ru:8990/api/loads?year=$get_year");
         } else {
+            DB::update("UPDATE `Loads` SET `deleted`='1' WHERE `year` = '$get_year' AND `tkey` = '$get_tkey'");
             $result = $this->load_from_api("http://runp.dit.urfu.ru:8990/api/loads?year=$get_year&tkey=$get_tkey");
         }
 
@@ -115,21 +117,21 @@ class AdminController extends Controller
 
                     if (empty($sql)) {
                         DB::insert("INSERT INTO `Loads` (`guidPerson1C`, `formingDivisionuuid`, `readingDivisionuuid`, `groupsHistory`,
-                `disciplineName`, `compensationType`, `loadType`, `plannedHours`, `realHours`, `semester`, `year`, `tkey`)
+                `disciplineName`, `compensationType`, `loadType`, `plannedHours`, `realHours`, `semester`, `year`, `tkey`, `deleted`)
                 VALUES ('$guidPerson1C', '$formingDivisionuuid', '$readingDivisionuuid', '$groupsHistory', '$disciplineName',
-                '$compensationType', '$loadType', '$plannedHours', '$realHours', '$semester', '$year', '$tkey')");
+                '$compensationType', '$loadType', '$plannedHours', '$realHours', '$semester', '$year', '$tkey', '0')");
                     } else {
                         $id = $sql[0]->id;
 
                         if ($compensationType == 'контракт')
                         {
                             DB::update("UPDATE `Loads` SET `plannedHours` = '$plannedHours', `realHours` = '$realHours',
-                   `guidPerson1C` = '$guidPerson1C', `formingDivisionuuid` = '$formingDivisionuuid', `readingDivisionuuid` = '$readingDivisionuuid' WHERE `id` = '$id'");
+                   `guidPerson1C` = '$guidPerson1C', `formingDivisionuuid` = '$formingDivisionuuid', `readingDivisionuuid` = '$readingDivisionuuid', `deleted` = '0' WHERE `id` = '$id'");
                         }
                         else
                         {
                             DB::update("UPDATE `Loads` SET `plannedHours` = '$plannedHours',
-                   `guidPerson1C` = '$guidPerson1C', `formingDivisionuuid` = '$formingDivisionuuid', `readingDivisionuuid` = '$readingDivisionuuid' WHERE `id` = '$id'");
+                   `guidPerson1C` = '$guidPerson1C', `formingDivisionuuid` = '$formingDivisionuuid', `readingDivisionuuid` = '$readingDivisionuuid', `deleted` = '0' WHERE `id` = '$id'");
                         }
                     }
                     DB::insert("INSERT IGNORE INTO `Divisions` (`uuid`, `name`) VALUES ('$formingDivisionuuid', '$formingDivisionname')");
@@ -153,11 +155,11 @@ class AdminController extends Controller
         $allowedDivisions = $this->get_allowed_divisions();
 
         $b = $this->SummHours("SELECT plannedHours, realHours, readingDivisionuuid FROM `Loads`
-                                                    WHERE tkey='$tkey' AND compensationType='бюджет' AND year='$year'", $allowedDivisions);
+                                                    WHERE tkey='$tkey' AND compensationType='бюджет' AND year='$year' AND deleted='0'", $allowedDivisions);
         $c = $this->SummHours("SELECT plannedHours, realHours, readingDivisionuuid FROM `Loads`
-                                                    WHERE tkey='$tkey' AND compensationType='контракт' AND year='$year'", $allowedDivisions);
+                                                    WHERE tkey='$tkey' AND compensationType='контракт' AND year='$year' AND deleted='0'", $allowedDivisions);
         $a = $this->SummHours("SELECT plannedHours, realHours, readingDivisionuuid FROM `Loads`
-                                                    WHERE tkey='$tkey' AND year='$year'", $allowedDivisions);
+                                                    WHERE tkey='$tkey' AND year='$year' AND deleted='0'", $allowedDivisions);
 
         $data->$tkey->bHoursPlaned = $b[0];
         $data->$tkey->bHoursReal = $b[1];
@@ -185,11 +187,11 @@ class AdminController extends Controller
             $tkey = $row->tkey;
 
             $b = $this->SummHours("SELECT plannedHours, realHours, readingDivisionuuid FROM `Loads`
-                                                    WHERE tkey='$tkey' AND compensationType='бюджет' AND year='$year'", $allowedDivisions);
+                                                    WHERE tkey='$tkey' AND compensationType='бюджет' AND year='$year' AND deleted='0'", $allowedDivisions);
             $c = $this->SummHours("SELECT plannedHours, realHours, readingDivisionuuid FROM `Loads`
-                                                    WHERE tkey='$tkey' AND compensationType='контракт' AND year='$year'", $allowedDivisions);
+                                                    WHERE tkey='$tkey' AND compensationType='контракт' AND year='$year' AND deleted='0'", $allowedDivisions);
             $a = $this->SummHours("SELECT plannedHours, realHours, readingDivisionuuid FROM `Loads`
-                                                    WHERE tkey='$tkey' AND year='$year'", $allowedDivisions);
+                                                    WHERE tkey='$tkey' AND year='$year' AND deleted='0'", $allowedDivisions);
 
             $line = [ $tkey => [
                 "bHoursPlaned" => $b[0], "bHoursReal" => $b[1], "bHoursDiff" => $b[2],
