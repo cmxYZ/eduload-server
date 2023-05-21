@@ -23,7 +23,7 @@ class UserController extends Controller
         $login = request()->get('login');
         $id = request()->get('samAccountName');
         $isKC = request()->get('isKeycloak');
-        DB::insert("INSERT IGNORE INTO `Users` (`login`, `roleID`, `samAccountName`, `password`, `isKeycloak`) VALUES ('$login', NULL, '$id', NULL, '$isKC')");
+        DB::insert("INSERT IGNORE INTO `Users` (`login`, `roleID`, `samAccountName`, `password`, `isKeycloak`) VALUES ('$login', '2', '$id', NULL, '$isKC')");
         $result = DB::select("SELECT `roleID` FROM `Users` WHERE `login` = '$login'");
         if ($result[0]->roleID != null) {
             $id = $result[0]->roleID;
@@ -178,7 +178,7 @@ class UserController extends Controller
             $worksheet->setCellValue($letters[13] . ($i + 2), $array[$i]->hoursDiff);
             $worksheet->setCellValue($letters[14] . ($i + 2), $array[$i]->year);
         }
-
+        $worksheet->setAutoFilter('A1:O' . count($array) + 1);
         $writer = new Xlsx($spreadsheet);
         $writer->save($filename);
         return view('download', ['filename' => $filename]);
@@ -225,9 +225,11 @@ class UserController extends Controller
             $worksheet->setCellValue($letters[9] . ($i + 2), $array[$i]->diff);
             $worksheet->setCellValue($letters[10] . ($i + 2), $array[$i]->isHour);
         }
-
+        $worksheet->setAutoFilter('A1:K' . count($array) + 1);
         $writer = new Xlsx($spreadsheet);
         $writer->save($filename);
         return view('download', ['filename' => $filename]);
     }
 }
+
+
