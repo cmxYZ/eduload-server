@@ -23,12 +23,12 @@ class UserController extends Controller
             }
 
         }
-        return 'No Data';
+        return 'No data';
     }
 
     public function get_one_teacher($accountName) {
         $tkey = DB::select("SELECT tkey FROM Teachers WHERE samAccountName='$accountName'");
-        if (empty($tkey)) return 'No Data';
+        if (empty($tkey)) return 'No data';
         else $tkey = $tkey[0]->tkey;
         $json = file_get_contents('data.json');
         $data = json_decode($json);
