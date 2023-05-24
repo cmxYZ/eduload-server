@@ -13,9 +13,35 @@ class UserController extends Controller
     public function load_data()
     {
         if (file_exists("data.json")) {
-            return file_get_contents('data.json');
+            $get_accountName = request()->get('accountName');
+
+            if ($get_accountName == '' || $get_accountName == null) {
+                return file_get_contents('data.json');
+            }
+            else {
+                return get_one_teacher($get_accountName);
+            }
+
         }
         return 'No Data';
+    }
+
+    public function get_one_teacher($accountName) {
+        $tkey = DB::select("SELECT tkey FROM Teachers WHERE samAccountName='$accountName'");
+        if (empty($tkey)) return 'No data';
+        else $tkey = $tkey[0]->tkey;
+        $json = file_get_contents('data.json');
+        $data = json_decode($json);
+        $result = array();
+        foreach ($data as $row)
+        {
+            if ($row->tkey == $tkey)
+            {
+                array_push($result, $row);
+            }
+        }
+        $json = json_encode($result, JSON_UNESCAPED_UNICODE);
+        return $json;
     }
 
     public function check_user()
@@ -23,7 +49,7 @@ class UserController extends Controller
         $login = request()->get('login');
         $id = request()->get('samAccountName');
         $isKC = request()->get('isKeycloak');
-        DB::insert("INSERT IGNORE INTO `Users` (`login`, `roleID`, `samAccountName`, `password`, `isKeycloak`) VALUES ('$login', '2', '$id', NULL, '$isKC')");
+        DB::insert("INSERT IGNORE INTO `Users` (`login`, `roleID`, `samAccountName`, `password`, `isKeycloak`) VALUES ('$login', '4', '$id', NULL, '$isKC')");
         $result = DB::select("SELECT `roleID` FROM `Users` WHERE `login` = '$login'");
         if ($result[0]->roleID != null) {
             $id = $result[0]->roleID;
