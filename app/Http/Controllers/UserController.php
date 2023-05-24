@@ -19,7 +19,7 @@ class UserController extends Controller
                 return file_get_contents('data.json');
             }
             else {
-                return get_one_teacher($get_accountName);
+                return $this->get_one_teacher($get_accountName);
             }
 
         }
