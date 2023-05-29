@@ -50,6 +50,7 @@ class UserController extends Controller
         $id = request()->get('samAccountName');
         $isKC = request()->get('isKeycloak');
         DB::insert("INSERT IGNORE INTO `Users` (`login`, `roleID`, `samAccountName`, `password`, `isKeycloak`) VALUES ('$login', '4', '$id', NULL, '$isKC')");
+        DB::insert("INSERT INTO `Loging` (`login`, `message`) VALUES ('INFO', 'Авторизирован пользователь (user=$id)')");
         $result = DB::select("SELECT `roleID` FROM `Users` WHERE `login` = '$login'");
         if ($result[0]->roleID != null) {
             $id = $result[0]->roleID;
@@ -108,9 +109,11 @@ class UserController extends Controller
     }
 
     public function change_hours() {
+        $user = request()->get('user');
         $value = request()->get('value');
         $guidPerson1C = request()->get('guidPerson1C');
         DB::update("UPDATE `PhysFace1C` SET `hours` = '$value' WHERE `PhysFace1C`.`guidPerson1C` = '$guidPerson1C'");
+        DB::insert("INSERT INTO `Loging` (`login`, `message`) VALUES ('INFO', 'Изменено значение PhysFace1C.hours (newValue=$value, guidPerson1C = $guidPerson1C, user=$user)')");
 
         $json = file_get_contents('data.json');
         $data = json_decode($json);
@@ -127,10 +130,12 @@ class UserController extends Controller
     }
 
     public function change_stake() {
+        $user = request()->get('user');
         $value = request()->get('value');
         $tkey = request()->get('tkey');
         $year = request()->get('year');
         DB::update("UPDATE `Stakes` SET `stake` = '$value' WHERE `tkey` = '$tkey' AND `year` = '$year'");
+        DB::insert("INSERT INTO `Loging` (`login`, `message`) VALUES ('INFO', 'Изменено значение Stakes.stake (newValue=$value, tkey = $tkey, year=$year ,user=$user)')");
 
         $json = file_get_contents('data.json');
         $data = json_decode($json);
@@ -146,20 +151,26 @@ class UserController extends Controller
     }
 
     public function change_ishour() {
+        $user = request()->get('user');
         $value = request()->get('value');
         $id = (int)request()->get('id');
         if ($value == 'true') $value = 1;
         if ($value == 'false') $value = 0;
         DB::update("UPDATE `Loads` SET `isHour` = '$value' WHERE `Loads`.`id` = $id");
+        DB::insert("INSERT INTO `Loging` (`login`, `message`) VALUES ('INFO', 'Изменено значение Loads.isHour (newValue=$value, id = $id ,user=$user)')");
     }
 
     public function change_realhours() {
         $value = request()->get('value');
+        $user = request()->get('user');
         $id = (int)request()->get('id');
         DB::update("UPDATE `Loads` SET `realHours` = '$value' WHERE `Loads`.`id` = $id");
+        DB::insert("INSERT INTO `Loging` (`login`, `message`) VALUES ('INFO', 'Изменено значение Loads.realHours (newValue=$value, id = $id ,user=$user)')");
     }
 
     public function load_excel() {
+        $user = $_GET['user'];
+
         $spreadsheet = new Spreadsheet();
         $worksheet = $spreadsheet->getActiveSheet();
         $letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O'];
@@ -186,7 +197,7 @@ class UserController extends Controller
         $json = $this->load_data();
         $array = json_decode($json);
         $filename = 'Отчет 1.xlsx';
-
+        DB::insert("INSERT INTO `Loging` (`login`, `message`) VALUES ('INFO', 'Сгенерирован $filename (user=$user)')");
         for ($i = 0; $i < count($array); $i++) {
             $worksheet->setCellValue($letters[0] . ($i + 2), $array[$i]->name);
             $worksheet->setCellValue($letters[1] . ($i + 2), $array[$i]->infoWorkPlaces);
@@ -232,11 +243,14 @@ class UserController extends Controller
         }
         $tkey = $_GET['tkey'];
         $year = $_GET['year'];
+        $user = $_GET['user'];
+
         $json = $this->get_data_by_tkey($tkey, $year);
         $array = json_decode($json);
         $name = DB::select("SELECT `lastName`, `firstName`, `patronymic` FROM `Teachers` WHERE `tkey` = '$tkey'");
         $filename = 'Нагрузка преподавателя ' . $name[0]->lastName . ' ' . $name[0]->firstName
             . ' ' . $name[0]->patronymic . ' ' . $year . '.xlsx';
+        DB::insert("INSERT INTO `Loging` (`login`, `message`) VALUES ('INFO', 'Сгенерирован $filename (user=$user)')");
 
         for ($i = 0; $i < count($array); $i++) {
             $worksheet->setCellValue($letters[0] . ($i + 2), $array[$i]->disciplineName);

@@ -10,6 +10,8 @@ class AdminController extends Controller
 {
     public function update_teachers()
     {
+        $get_user = request()->get('user');
+        DB::insert("INSERT INTO `Loging` (`login`, `message`) VALUES ('INFO', 'Начато обновление учителей (user=$get_user)')");
         $result = $this->load_from_api('http://runp.dit.urfu.ru:8990/api/teachers');
 
         foreach ($result as $value) {
@@ -51,10 +53,10 @@ class AdminController extends Controller
             }
             //Teachers
         }
-        return $this->update_stakes();
+        return $this->update_stakes("Завершено обновление учителей (user=$get_user)");
     }
 
-    public function update_stakes()
+    public function update_stakes($massage)
     {
         $years = DB::select("SELECT `year` FROM `Years`");
         $teachers = DB::select("SELECT `tkey`, `stake` FROM `Teachers`");
@@ -68,7 +70,7 @@ class AdminController extends Controller
                 }
             }
         }
-        return $this->update_json();
+        return $this->update_json($massage);
     }
 
     public function update_loads()
@@ -81,8 +83,10 @@ class AdminController extends Controller
         if ($get_year == null || $get_year == '') {
             $get_year = $this->setYear();
         }
-
         $get_tkey = request()->get('tkey');
+        $get_user = request()->get('user');
+        DB::insert("INSERT INTO `Loging` (`login`, `message`) VALUES ('INFO', 'Начато обновление нагрузок (year=$get_year, tkey=$get_tkey, user=$get_user)')");
+
         $result = '';
         if ($get_tkey == null || $get_tkey == '') {
             DB::update("UPDATE `Loads` SET `deleted`='1' WHERE `year` = '$get_year'");
@@ -140,13 +144,14 @@ class AdminController extends Controller
                 }
             }
         }
+        $massage = "Завершено обновление нагрузок (year=$get_year, tkey=$get_tkey, user=$get_user)";
         if ($get_tkey == null || $get_tkey == '') {
-            return $this->update_year_json($get_year);
+            return $this->update_year_json($get_year, $massage);
         }
-        return $this->update_teacher_in_json($get_year, $get_tkey);
+        return $this->update_teacher_in_json($get_year, $get_tkey, $massage);
     }
 
-    public function update_teacher_in_json($year, $tkey)
+    public function update_teacher_in_json($year, $tkey, $massage)
     {
         if (!file_exists("$year.json")) return $this->update_year_json($year);;
 
@@ -174,10 +179,10 @@ class AdminController extends Controller
         $json = json_encode($data, JSON_UNESCAPED_UNICODE);
         unlink("$year.json");
         file_put_contents("$year.json", $json);
-        return $this->update_stakes();
+        return $this->update_stakes($massage);
     }
 
-    public function update_year_json($year)
+    public function update_year_json($year, $massage)
     {
         $data = array();
         $result = DB::select("SELECT tkey FROM `Teachers`");
@@ -206,10 +211,10 @@ class AdminController extends Controller
             unlink("$year.json");
         }
         file_put_contents("$year.json", $json);
-        return $this->update_stakes();
+        return $this->update_stakes($massage);
     }
 
-    public function update_json() {
+    public function update_json($massage) {
         $years = DB::select("SELECT `year` FROM `Years`");
         $data = array();
         $teachers = DB::select("SELECT * FROM `Teachers`");
@@ -261,6 +266,7 @@ class AdminController extends Controller
             unlink("data.json");
         }
         file_put_contents('data.json', $json);
+        DB::insert("INSERT INTO `Loging` (`login`, `message`) VALUES ('INFO', '$massage')");
         return 'Success';
     }
 
