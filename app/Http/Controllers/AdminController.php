@@ -11,7 +11,7 @@ class AdminController extends Controller
     public function update_teachers()
     {
         $get_user = request()->get('user');
-        DB::insert("INSERT INTO `Loging` (`login`, `message`) VALUES ('INFO', 'Начато обновление учителей (user=$get_user)')");
+        DB::insert("INSERT INTO `Loging` (`login`, `message`) VALUES ('$get_user', 'INFO: Начато обновление учителей')");
         $result = $this->load_from_api('http://runp.dit.urfu.ru:8990/api/teachers');
 
         foreach ($result as $value) {
@@ -53,7 +53,7 @@ class AdminController extends Controller
             }
             //Teachers
         }
-        return $this->update_stakes("Завершено обновление учителей (user=$get_user)");
+        return $this->update_stakes("INSERT INTO `Loging` (`login`, `message`) VALUES ('$get_user', 'INFO: Завершено обновление учителей')");
     }
 
     public function update_stakes($massage)
@@ -85,7 +85,7 @@ class AdminController extends Controller
         }
         $get_tkey = request()->get('tkey');
         $get_user = request()->get('user');
-        DB::insert("INSERT INTO `Loging` (`login`, `message`) VALUES ('INFO', 'Начато обновление нагрузок (year=$get_year, tkey=$get_tkey, user=$get_user)')");
+        DB::insert("INSERT INTO `Loging` (`login`, `message`) VALUES ('$get_user', 'INFO: Начато обновление нагрузок (year=$get_year, tkey=$get_tkey)')");
 
         $result = '';
         if ($get_tkey == null || $get_tkey == '') {
@@ -144,7 +144,7 @@ class AdminController extends Controller
                 }
             }
         }
-        $massage = "Завершено обновление нагрузок (year=$get_year, tkey=$get_tkey, user=$get_user)";
+        $massage = "INSERT INTO `Loging` (`login`, `message`) VALUES ('$get_user', 'INFO: Завершено обновление нагрузок (year=$get_year, tkey=$get_tkey)')";
         if ($get_tkey == null || $get_tkey == '') {
             return $this->update_year_json($get_year, $massage);
         }
@@ -228,7 +228,7 @@ class AdminController extends Controller
                     $tkey = $teacher->tkey;
                     $name = $teacher->lastName . ' ' . $teacher->firstName . ' ' . $teacher->patronymic;
                     $infoWorkPlaces = $teacher->infoWorkPlaces;
-
+                    if (!isset($current_year_loads->$tkey)) continue;
                     $stake = '-';
                     $sql = DB::select("SELECT `stake` FROM `Stakes` WHERE `tkey` = '$tkey' AND `year` = '$year'");
                     if (!empty($sql))
@@ -242,10 +242,8 @@ class AdminController extends Controller
 
                     if (!empty($h))
                         $hoursOnStake = (float)$h[0]->hours;
-                    try {
-                        $hours = $current_year_loads->$tkey->bHoursPlaned - $hoursOnStake;
-                    }
-                    catch (Exception $e) { }
+
+                    $hours = $current_year_loads->$tkey->bHoursPlaned - $hoursOnStake;
 
                     $line = ["tkey" => "$tkey", "name" => "$name", "infoWorkPlaces" => "$infoWorkPlaces", "stake" => $stake,
                         "hoursOnStake" => $hoursOnStake, "hours" => round($hours,2),
@@ -269,7 +267,7 @@ class AdminController extends Controller
             unlink("data.json");
         }
         file_put_contents('data.json', $json);
-        DB::insert("INSERT INTO `Loging` (`login`, `message`) VALUES ('INFO', '$massage')");
+        DB::insert($massage);
         return 'Success';
     }
 

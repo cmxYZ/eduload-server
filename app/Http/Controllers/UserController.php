@@ -112,7 +112,7 @@ class UserController extends Controller
         $value = request()->get('value');
         $guidPerson1C = request()->get('guidPerson1C');
         DB::update("UPDATE `PhysFace1C` SET `hours` = '$value' WHERE `PhysFace1C`.`guidPerson1C` = '$guidPerson1C'");
-        DB::insert("INSERT INTO `Loging` (`login`, `message`) VALUES ('INFO', 'Изменено значение PhysFace1C.hours (newValue=$value, guidPerson1C = $guidPerson1C, user=$user)')");
+        DB::insert("INSERT INTO `Loging` (`login`, `message`) VALUES ('$user', 'INFO: Изменено значение PhysFace1C.hours (newValue=$value, guidPerson1C = $guidPerson1C)')");
 
         $json = file_get_contents('data.json');
         $data = json_decode($json);
@@ -134,7 +134,7 @@ class UserController extends Controller
         $tkey = request()->get('tkey');
         $year = request()->get('year');
         DB::update("UPDATE `Stakes` SET `stake` = '$value' WHERE `tkey` = '$tkey' AND `year` = '$year'");
-        DB::insert("INSERT INTO `Loging` (`login`, `message`) VALUES ('INFO', 'Изменено значение Stakes.stake (newValue=$value, tkey = $tkey, year=$year ,user=$user)')");
+        DB::insert("INSERT INTO `Loging` (`login`, `message`) VALUES ('$user', 'INFO: Изменено значение Stakes.stake (newValue=$value, tkey = $tkey, year=$year)')");
 
         $json = file_get_contents('data.json');
         $data = json_decode($json);
@@ -156,7 +156,7 @@ class UserController extends Controller
         if ($value == 'true') $value = 1;
         if ($value == 'false') $value = 0;
         DB::update("UPDATE `Loads` SET `isHour` = '$value' WHERE `Loads`.`id` = $id");
-        DB::insert("INSERT INTO `Loging` (`login`, `message`) VALUES ('INFO', 'Изменено значение Loads.isHour (newValue=$value, id = $id ,user=$user)')");
+        DB::insert("INSERT INTO `Loging` (`login`, `message`) VALUES ('$user', 'INFO: Изменено значение Loads.isHour (newValue=$value, id = $id)')");
     }
 
     public function change_realhours() {
@@ -164,7 +164,7 @@ class UserController extends Controller
         $user = request()->get('user');
         $id = (int)request()->get('id');
         DB::update("UPDATE `Loads` SET `realHours` = '$value' WHERE `Loads`.`id` = $id");
-        DB::insert("INSERT INTO `Loging` (`login`, `message`) VALUES ('INFO', 'Изменено значение Loads.realHours (newValue=$value, id = $id ,user=$user)')");
+        DB::insert("INSERT INTO `Loging` (`login`, `message`) VALUES ('$user', 'INFO: Изменено значение Loads.realHours (newValue=$value, id = $id)')");
     }
 
     public function load_excel() {
@@ -196,7 +196,7 @@ class UserController extends Controller
         $json = $this->load_data();
         $array = json_decode($json);
         $filename = 'Отчет 1.xlsx';
-        DB::insert("INSERT INTO `Loging` (`login`, `message`) VALUES ('INFO', 'Сгенерирован $filename (user=$user)')");
+        DB::insert("INSERT INTO `Loging` (`login`, `message`) VALUES ('$user', 'INFO: Сгенерирован файл \"$filename\"')");
         for ($i = 0; $i < count($array); $i++) {
             $worksheet->setCellValue($letters[0] . ($i + 2), $array[$i]->name);
             $worksheet->setCellValue($letters[1] . ($i + 2), $array[$i]->infoWorkPlaces);
@@ -249,7 +249,7 @@ class UserController extends Controller
         $name = DB::select("SELECT `lastName`, `firstName`, `patronymic` FROM `Teachers` WHERE `tkey` = '$tkey'");
         $filename = 'Нагрузка преподавателя ' . $name[0]->lastName . ' ' . $name[0]->firstName
             . ' ' . $name[0]->patronymic . ' ' . $year . '.xlsx';
-        DB::insert("INSERT INTO `Loging` (`login`, `message`) VALUES ('INFO', 'Сгенерирован $filename (user=$user)')");
+        DB::insert("INSERT INTO `Loging` (`login`, `message`) VALUES ('$user', 'INFO: Сгенерирован файл \"$filename\"')");
 
         for ($i = 0; $i < count($array); $i++) {
             $worksheet->setCellValue($letters[0] . ($i + 2), $array[$i]->disciplineName);
