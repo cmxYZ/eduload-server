@@ -214,7 +214,7 @@ class AdminController extends Controller
         return $this->update_stakes($massage);
     }
 
-    public function update_json($massage) {
+    public function update_json($massage = 'test') {
         $years = DB::select("SELECT `year` FROM `Years`");
         $data = array();
         $teachers = DB::select("SELECT * FROM `Teachers`");
@@ -245,7 +245,7 @@ class AdminController extends Controller
                     $hours = $current_year_loads->$tkey->bHoursPlaned - $hoursOnStake;
 
                     $line = ["tkey" => "$tkey", "name" => "$name", "infoWorkPlaces" => "$infoWorkPlaces", "stake" => $stake,
-                        "hoursOnStake" => $hoursOnStake, "hours" => $hours,
+                        "hoursOnStake" => $hoursOnStake, "hours" => round($hours,2),
                         "bHoursPlaned" => $current_year_loads->$tkey->bHoursPlaned,
                         "bHoursReal" => $current_year_loads->$tkey->bHoursReal,
                         "bHoursDiff" => $current_year_loads->$tkey->bHoursDiff,
