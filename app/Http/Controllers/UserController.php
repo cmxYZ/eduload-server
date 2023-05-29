@@ -50,7 +50,6 @@ class UserController extends Controller
         $id = request()->get('samAccountName');
         $isKC = request()->get('isKeycloak');
         DB::insert("INSERT IGNORE INTO `Users` (`login`, `roleID`, `samAccountName`, `password`, `isKeycloak`) VALUES ('$login', '4', '$id', NULL, '$isKC')");
-        DB::insert("INSERT INTO `Loging` (`login`, `message`) VALUES ('INFO', 'Авторизирован пользователь (user=$id)')");
         $result = DB::select("SELECT `roleID` FROM `Users` WHERE `login` = '$login'");
         if ($result[0]->roleID != null) {
             $id = $result[0]->roleID;
