@@ -238,11 +238,14 @@ class AdminController extends Controller
 
                     $h = DB::select("SELECT hours FROM PhysFace1C WHERE guidPerson1C='$teacher->guidPerson1C'");
                     $hoursOnStake = 0;
+                    $hours = 0;
 
                     if (!empty($h))
                         $hoursOnStake = (float)$h[0]->hours;
-                    var_dump($current_year_loads);
-                    $hours = $current_year_loads->$tkey->bHoursPlaned - $hoursOnStake;
+                    try {
+                        $hours = $current_year_loads->$tkey->bHoursPlaned - $hoursOnStake;
+                    }
+                    catch (Exception $e) { }
 
                     $line = ["tkey" => "$tkey", "name" => "$name", "infoWorkPlaces" => "$infoWorkPlaces", "stake" => $stake,
                         "hoursOnStake" => $hoursOnStake, "hours" => round($hours,2),
