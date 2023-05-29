@@ -241,7 +241,7 @@ class AdminController extends Controller
 
                     if (!empty($h))
                         $hoursOnStake = (float)$h[0]->hours;
-
+                    dd($current_year_loads);
                     $hours = $current_year_loads->$tkey->bHoursPlaned - $hoursOnStake;
 
                     $line = ["tkey" => "$tkey", "name" => "$name", "infoWorkPlaces" => "$infoWorkPlaces", "stake" => $stake,
